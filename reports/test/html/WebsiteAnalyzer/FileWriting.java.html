@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FileWriting.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">FileWriting.java</span></div><h1>FileWriting.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.text.DecimalFormat;
+
+/*
+ * this class is the driver function for producing the output files .txt, .json, and .xlsx
+ * also contains some helpers for formatting things correctly, such as date/time, file sizes
+ */
+<span class="nc" id="L11">public class FileWriting {</span>
+
+    /*
+     * list of file size modifiers that will be referenced when file sizes are populated into files
+     */
+<span class="fc" id="L16">    final private static String[] sizeNames = {&quot;B&quot;, &quot;KiB&quot;, &quot;MiB&quot;, &quot;GiB&quot;, &quot;TiB&quot;, &quot;PiB&quot;, &quot;EiB&quot;};</span>
+    
+    /**
+     * call all of the output functions to generate the text, excel, and JSON files
+     * @param Pages
+     * @param Images
+     * @param Archives
+     * @param Videos
+     * @param Audios
+     * @param CSS
+     * @param JS
+     * @param Uncategorized
+     * takes in the various page list and element lists as inputs,
+     * sends those inputs to helper functions to be output
+     * returns nothing
+     */
+    public static void outputAllFiles(ListOfPages Pages, ListOfPageElements Images,
+    ListOfPageElements Archives, ListOfPageElements Videos, ListOfPageElements Audios,
+    ListOfPageElements CSS, ListOfPageElements JS, ListOfPageElements Uncategorized)
+    {
+		/*
+		 * before generating output files, first ensure that a minimum of 1 page exists to actually be printed
+		 */
+<span class="fc bfc" id="L39" title="All 2 branches covered.">		if (Pages.List.size() &gt; 0)</span>
+		{
+            /*
+             * keep track of the output files that the various data goes in
+             */
+<span class="fc" id="L44">            String outputFileName = &quot;&quot;;</span>
+
+			/*
+			 * generate an output text file
+             * store the resulting output file name
+             * send the output file name to the user console
+			 */
+<span class="fc" id="L51">			outputFileName = TextFileWriter.outputTextFile(Website.Pages);</span>
+<span class="fc" id="L52">            CLI.throwMessage(&quot;Text file output file at: &quot; + outputFileName);</span>
+
+			/*
+			 * generate an output excel file
+			 */
+<span class="fc" id="L57">			outputFileName = ExcelFileWriter.outputExcelFile(Website.Pages);</span>
+<span class="fc" id="L58">            CLI.throwMessage(&quot;Excel file output file at: &quot; + outputFileName);</span>
+
+			/*
+			 * generate an output JSON file
+			 */
+<span class="fc" id="L63">			outputFileName = JSONFileWriter.outputJsonFile(Website.Pages, Website.Images, Website.Archives, Website.Videos, Website.Audios, Website.Uncategorized);</span>
+<span class="fc" id="L64">            CLI.throwMessage(&quot;JSON file output file at: &quot; + outputFileName);</span>
+<span class="fc" id="L65">		}</span>
+		else
+		{
+			/*
+			 * the list of pages contains nothing, generate an error
+			 */
+<span class="fc" id="L71">			CLI.throwError(&quot;No pages were found!&quot;);</span>
+		}
+<span class="fc" id="L73">    }</span>
+
+
+    /**
+     * this function will get the current date/time, which is used for naming output files
+     * takes nothing as input, returns a date/time as a string
+     * @return dateTime
+     */
+    public static String getDate()
+    {
+        /*
+         * define how the date will be formatted
+         */
+<span class="fc" id="L86">        DateTimeFormatter formatDateCorrectly = DateTimeFormatter.ofPattern(&quot;uuuuMMdd-HHmmss&quot;);</span>
+
+        /*
+         * store the now formatted date as a string
+         */
+<span class="fc" id="L91">        String dateTime = (formatDateCorrectly.format(LocalDateTime.now()).toString());        </span>
+
+<span class="fc" id="L93">        return dateTime;</span>
+    }
+
+    
+    /**
+     * this function will take in a filesize as a double of bytes
+     * the bytes will be converted into string of B/KiB/MiB/GiB etc...
+     * takes in a double of bytes, returns the size normalized as a string
+     * @param inputFileSize
+     * @return file size in string format
+     */
+    public static String convertFileSizeToString(double inputFileSize)
+    {
+        /*
+         * store the final output that is converted
+         */
+<span class="fc" id="L109">        String outputFileSize = &quot;&quot;;</span>
+
+        /*
+         * rounding logic
+         */
+<span class="fc" id="L114">        DecimalFormat rounding = new DecimalFormat(&quot;0.00&quot;);</span>
+
+        /*
+         * loop until we figure out what the filesize should be
+         */
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">        for (int i = 0; i &lt; 7; i++)</span>
+        {
+<span class="fc bfc" id="L121" title="All 2 branches covered.">            if (inputFileSize &lt; 1024)</span>
+            {
+                /*
+                 * the file size has been determined, add a modifier on the end
+                 */
+<span class="fc" id="L126">                outputFileSize = String.valueOf(rounding.format(inputFileSize)) + sizeNames[i];</span>
+
+                /*
+                 * output the new string of B, KB, MB, etc
+                 */
+<span class="fc" id="L131">                return outputFileSize; </span>
+            }
+            else
+            {
+                /*
+                 * divide the fileSize by another increment of 1024, and try the loop again
+                 */
+<span class="fc" id="L138">                inputFileSize /= 1024;</span>
+<span class="pc bpc" id="L139" title="1 of 2 branches missed.">                if (i == 6)</span>
+                {
+                    /*
+                     * oops... looks like the program encountered a file too large to be processed
+                     * save an error instead of a file size
+                     * realistically this should never actually happen
+                     */
+<span class="nc" id="L146">                    outputFileSize = &quot;You overflowed my unit converion function!&quot;;</span>
+                }
+            }
+        }
+
+        /*
+         * output the new string of B, KB, MB, etc
+         */
+<span class="nc" id="L154">        return outputFileSize; </span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

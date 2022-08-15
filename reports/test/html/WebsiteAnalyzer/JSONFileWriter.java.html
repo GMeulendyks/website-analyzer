@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>JSONFileWriter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">JSONFileWriter.java</span></div><h1>JSONFileWriter.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+/*
+ * this class is responsible for producing a JSON output file
+ */
+<span class="nc" id="L14">public class JSONFileWriter extends FileWriting{</span>
+
+    /**
+     * this function will create a JSON array of pages
+     * takes in a list of pages, returns a JSON object containing the pages
+     * @param Pages
+     * @return the JSON for the pages
+     */
+    public static JsonArray makeJSONPageList(ArrayList&lt;SinglePage&gt; Pages)
+    {
+        /*
+         * JSON array that will store the entire list of pages
+         */
+<span class="fc" id="L27">        JsonArray PageList = new JsonArray();</span>
+
+        /*
+         * fill the PageList JSON array with all the pages that the website has
+         */
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        for (int i = 0; i &lt; Pages.size(); i++)</span>
+        {
+            /*
+             * create temporary JSON objects/arrays to populate values into
+             */
+<span class="fc" id="L37">            JsonObject Page = new JsonObject();</span>
+<span class="fc" id="L38">            JsonObject imageCount = new JsonObject();</span>
+<span class="fc" id="L39">            JsonObject jsCount = new JsonObject();</span>
+<span class="fc" id="L40">            JsonObject cssCount = new JsonObject();</span>
+<span class="fc" id="L41">            JsonArray imagePaths = new JsonArray();</span>
+<span class="fc" id="L42">            JsonArray scriptPaths = new JsonArray();</span>
+<span class="fc" id="L43">            JsonArray cssPaths = new JsonArray();</span>
+<span class="fc" id="L44">            JsonObject linkCount = new JsonObject();</span>
+
+            /*
+             * populate the image count JSON object
+             */
+<span class="fc" id="L49">            imageCount.addProperty(&quot;local&quot;, Pages.get(i).getnumInternalImages());</span>
+<span class="fc" id="L50">            imageCount.addProperty(&quot;external&quot;, Pages.get(i).getnumExternalImages());</span>
+
+            /*
+             * populate the JS count JSONO object
+             */
+<span class="fc" id="L55">            jsCount.addProperty(&quot;local&quot;, Pages.get(i).getnumInternalJavaScripts());</span>
+<span class="fc" id="L56">            jsCount.addProperty(&quot;external&quot;, Pages.get(i).getnumExternalJavaScripts());</span>
+
+            /*
+             * populate the CSS count JSON object
+             */
+<span class="fc" id="L61">            cssCount.addProperty(&quot;local&quot;, Pages.get(i).getnumInternalCascadingStyleSheets());</span>
+<span class="fc" id="L62">            cssCount.addProperty(&quot;external&quot;, Pages.get(i).getnumExternalCascadingStyleSheets());</span>
+
+            /*
+             * populate the imagePaths JSON array
+             */
+<span class="fc bfc" id="L67" title="All 2 branches covered.">            for (int k = 0; k &lt; Pages.get(i).referencingImages.size(); k++)</span>
+            {
+<span class="fc" id="L69">                imagePaths.add(Pages.get(i).referencingImages.get(k));</span>
+            }
+
+            /*
+             * populate the scriptPaths JSON array
+             */
+<span class="fc bfc" id="L75" title="All 2 branches covered.">            for (int k = 0; k &lt; Pages.get(i).referencingJS.size(); k++)</span>
+            {
+<span class="fc" id="L77">                scriptPaths.add(Pages.get(i).referencingJS.get(k));</span>
+            }
+
+            /*
+             * populate the cssPaths JSON array
+             */
+<span class="fc bfc" id="L83" title="All 2 branches covered.">            for (int k = 0; k &lt; Pages.get(i).referencingCSS.size(); k++)</span>
+            {
+<span class="fc" id="L85">                cssPaths.add(Pages.get(i).referencingCSS.get(k));</span>
+            }
+
+            /*
+             * populate the linkCount JSON object
+             */
+<span class="fc" id="L91">            linkCount.addProperty(&quot;intra-page&quot;, Pages.get(i).getnumIntraPageLinks());</span>
+<span class="fc" id="L92">            linkCount.addProperty(&quot;intra-site&quot;, Pages.get(i).getnumIntraSiteLinks());</span>
+<span class="fc" id="L93">            linkCount.addProperty(&quot;external&quot;, Pages.get(i).getnumExternalLinks());</span>
+
+            /*
+             * add all the temporary local JSON objects to the Page JSON object
+             */
+<span class="fc" id="L98">            Page.addProperty(&quot;path&quot;, Pages.get(i).getRelativePath());</span>
+<span class="fc" id="L99">            Page.add(&quot;imageCount&quot;, imageCount);</span>
+<span class="fc" id="L100">            Page.add(&quot;jsCount&quot;, jsCount);</span>
+<span class="fc" id="L101">            Page.add(&quot;cssCount&quot;, cssCount);</span>
+<span class="fc" id="L102">            Page.add(&quot;imagePaths&quot;, imagePaths);</span>
+<span class="fc" id="L103">            Page.add(&quot;scriptPaths&quot;, scriptPaths);</span>
+<span class="fc" id="L104">            Page.add(&quot;cssPaths&quot;, cssPaths);</span>
+<span class="fc" id="L105">            Page.add(&quot;linkCount&quot;, linkCount);</span>
+
+            /*
+             * add the JSON page object to the JSON page Array
+             */
+<span class="fc" id="L110">            PageList.add(Page);</span>
+        }
+<span class="fc" id="L112">        return PageList;</span>
+    }
+
+
+    /**
+     * this function will create a JSON array with all of the website URLs
+     * tajes in a list of URLs, returns a JSOn object containing the URLs
+     * @param inputURLS
+     * @return JSON array of URLs
+     */
+    public static JsonArray makeJSONURL(ArrayList&lt;String&gt; inputURLS)
+    {
+        /*
+         * JSON array that will store all the URLs of the website
+         */
+<span class="fc" id="L127">        JsonArray listURL = new JsonArray();</span>
+
+        /*
+         * fill the listURL JSON array with all the URLs that the website has
+         */
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        for (int i = 0; i &lt; inputURLS.size(); i++)</span>
+        {
+<span class="fc" id="L134">            listURL.add(inputURLS.get(i));</span>
+        }
+
+<span class="fc" id="L137">        return listURL;</span>
+    }
+
+
+    /**
+     * this function will create a JSON array with all of the images
+     * takes in a list of images, returns a JSON object containing the images
+     * @param Images
+     * @return JSON array of Images
+     */
+    public static JsonArray makeImageJSON(ArrayList&lt;SinglePageElement&gt; Images)
+    {
+        /*
+         * JSON array to store all the images
+         */
+<span class="fc" id="L152">        JsonArray ImageList = new JsonArray();</span>
+
+        /*
+         * fill the image JSON array with image JSON objects
+         */
+<span class="fc bfc" id="L157" title="All 2 branches covered.">        for (int i = 0; i &lt; Images.size(); i++)</span>
+        {
+            /*
+             * JSON object &amp; array that one image will be comprised of
+             */
+<span class="fc" id="L162">            JsonObject image = new JsonObject();</span>
+<span class="fc" id="L163">            JsonArray usedOn = new JsonArray();</span>
+
+            /*
+             * populate values into the JSON objects
+             */
+<span class="fc" id="L168">            image.addProperty(&quot;path&quot;, Images.get(i).getRelativePath());</span>
+<span class="fc" id="L169">            image.addProperty(&quot;pageCount&quot;, Images.get(i).getNumLinkedPages());</span>
+
+            /*
+             * populate the usedON JSON array
+             */
+<span class="fc bfc" id="L174" title="All 2 branches covered.">            for (int k = 0; k &lt; Images.get(i).referencingPages.size(); k++)</span>
+            {
+<span class="fc" id="L176">                usedOn.add(Images.get(i).referencingPages.get(k));</span>
+            }
+
+            /*
+             * add the usedOn array to the image
+             */
+<span class="fc" id="L182">            image.add(&quot;usedOn&quot;,usedOn);</span>
+
+            /*
+             * add the new image JSON object to the image JSON array
+             */
+<span class="fc" id="L187">            ImageList.add(image);</span>
+        }
+
+<span class="fc" id="L190">        return ImageList;</span>
+    }
+
+
+    /**
+     * this function will generate the various JSON arrays for the generic file types
+     * such as archive, video, audio, and other (uncategorized)
+     * takes in a list of elements, returns a JSON object with those elements
+     * @param Elements
+     * @return JSON array of Data Elements
+     */
+    public static JsonArray makeOtherJSON(ArrayList&lt;SinglePageElement&gt; Elements)
+    {
+        /*
+         * JSON array to store everything in
+         */
+<span class="fc" id="L206">        JsonArray FileList = new JsonArray();</span>
+
+        /*
+         * loop through the element list and build it
+         */
+<span class="fc bfc" id="L211" title="All 2 branches covered.">        for (int i = 0; i &lt; Elements.size(); i++)</span>
+        {
+            /*
+             * make a temporary file JSON object
+             */
+<span class="fc" id="L216">            JsonObject tempFile = new JsonObject();</span>
+
+            /*
+             * populate the temporary JSON object with the attributes of one file
+             */
+<span class="fc" id="L221">            tempFile.addProperty(&quot;path&quot;, Elements.get(i).getRelativePath());</span>
+<span class="fc" id="L222">            tempFile.addProperty(&quot;size&quot;, convertFileSizeToString(Elements.get(i).getFileSizeBytes()));</span>
+
+            /*
+             * add the newly created JSON object to the array of JSON objects
+             */
+<span class="fc" id="L227">            FileList.add(tempFile);</span>
+        }
+
+<span class="fc" id="L230">        return FileList;</span>
+    }
+
+
+    /**
+     * this function will handle creating the output of a JSON file
+     * first creates some basic objects, then calls other functions to populate them
+     * once everything is populated, the objects get dumped into the output file
+     * takes in the various page list and element lists, sends the data to helpers,
+     * returns the output JSON file name, which is later printed and saved
+     * @param PageSet
+     * @param ImageSet
+     * @param ArchiveSet
+     * @param VideoSet
+     * @param AudioSet
+     * @param UncategorizedSet
+     * @return creates JSON output file
+     */
+    public static String outputJsonFile(ListOfPages PageSet, ListOfPageElements ImageSet,
+    ListOfPageElements ArchiveSet, ListOfPageElements VideoSet,
+    ListOfPageElements AudioSet, ListOfPageElements UncategorizedSet)
+    {
+       /*
+        * get the current date/time
+        * add the extra bit of text and file extension
+        */
+<span class="fc" id="L256">        String outputFileName = (getDate() + &quot;-summary.json&quot;);</span>
+
+        /*
+         * convert everything into arrays to make iterating easier
+         */
+<span class="fc" id="L261">        ArrayList&lt;SinglePage&gt; Pages = new ArrayList&lt;&gt;(PageSet.List);</span>
+<span class="fc" id="L262">        ArrayList&lt;SinglePageElement&gt; Images = new ArrayList&lt;&gt;(ImageSet.List);</span>
+<span class="fc" id="L263">        ArrayList&lt;SinglePageElement&gt; Archives = new ArrayList&lt;&gt;(ArchiveSet.List);</span>
+<span class="fc" id="L264">        ArrayList&lt;SinglePageElement&gt; Videos = new ArrayList&lt;&gt;(VideoSet.List);</span>
+<span class="fc" id="L265">        ArrayList&lt;SinglePageElement&gt; Audios = new ArrayList&lt;&gt;(AudioSet.List);</span>
+<span class="fc" id="L266">        ArrayList&lt;SinglePageElement&gt; Uncategorized = new ArrayList&lt;&gt;(UncategorizedSet.List);</span>
+
+        /*
+         * JSON object that will store the entire JSON document
+         */
+<span class="fc" id="L271">        JsonObject entireDocument = new JsonObject();</span>
+
+        /*
+         * JSON object that will store the entire array of pages
+         * call a helper function to build the JSON array
+         */
+<span class="fc" id="L277">        JsonArray pageList = makeJSONPageList(Pages);</span>
+
+        /*
+         * JSON object that will store the entire array of images
+         * call a helper function to build the JSON array
+         */
+<span class="fc" id="L283">        JsonArray imageList = makeImageJSON(Images);</span>
+
+        /*
+         * JSON object that will store all the URLs of the website
+         * call a helper function to build the JSON array
+         */
+<span class="fc" id="L289">        JsonArray listURL = makeJSONURL(Website.inputURLS);</span>
+
+        /*
+         * JSON arrays that will store the generic file data
+         * call a helper function to build the various JSON arrays
+         * send archive, video, audio, other/uncategorized
+         */
+<span class="fc" id="L296">        JsonArray archive = makeOtherJSON(Archives);</span>
+<span class="fc" id="L297">        JsonArray video = makeOtherJSON(Videos);</span>
+<span class="fc" id="L298">        JsonArray audio = makeOtherJSON(Audios);</span>
+<span class="fc" id="L299">        JsonArray other = makeOtherJSON(Uncategorized);</span>
+
+        /*
+         * package the file types into another object
+         */
+<span class="fc" id="L304">        JsonObject files = new JsonObject();</span>
+<span class="fc" id="L305">        files.add(&quot;archive&quot;,archive);</span>
+<span class="fc" id="L306">        files.add(&quot;video&quot;,video);</span>
+<span class="fc" id="L307">        files.add(&quot;audio&quot;,audio);</span>
+<span class="fc" id="L308">        files.add(&quot;other&quot;,other);</span>
+
+        /*
+         * insert all of the generated JSON objects until the entireDocument
+         * which will aggregate all the objects into a single large JSON structure
+         * which will then be dumped into an output JSON file
+         */
+<span class="fc" id="L315">        entireDocument.addProperty(&quot;basePath&quot;,Website.baseDirectory);</span>
+<span class="fc" id="L316">        entireDocument.add(&quot;urls&quot;,listURL);</span>
+<span class="fc" id="L317">        entireDocument.add(&quot;pages&quot;,pageList);</span>
+<span class="fc" id="L318">        entireDocument.add(&quot;images&quot;,imageList);</span>
+<span class="fc" id="L319">        entireDocument.add(&quot;files&quot;,files);</span>
+
+        /*
+         * touch up the formatting to be a &quot;pretty&quot; human readable format
+         */
+<span class="fc" id="L324">        Gson prettyOutput = new GsonBuilder().setPrettyPrinting().create();</span>
+<span class="fc" id="L325">        String output = prettyOutput.toJson(entireDocument);</span>
+
+        /*
+         * dump the entire JSON document into the output file as a string
+         */
+<span class="fc" id="L330">        try (FileWriter outTxt = new FileWriter(outputFileName))</span>
+        {
+<span class="fc" id="L332">            outTxt.write(output);</span>
+        }
+<span class="nc" id="L334">        catch (IOException e)</span>
+        {
+<span class="nc" id="L336">            e.printStackTrace();</span>
+<span class="fc" id="L337">        }</span>
+
+<span class="fc" id="L339">        return outputFileName;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

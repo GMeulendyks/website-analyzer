@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BakedData.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">BakedData.java</span></div><h1>BakedData.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.util.Random;
+
+/*
+ * THIS CLASS IS USED FOR TESTING PURPOSES
+ * this class is responsible for generating a large dataset of randomized baked data
+ * this is NOT used during normal program operation
+ * useful for developers for testing purposes
+ */
+<span class="nc" id="L11">public class BakedData {</span>
+    
+	/*
+	 * random number generator
+	 * used by the various functions in this class to generate random data
+	 */
+<span class="fc" id="L17">	static Random random = new Random();</span>
+
+	/*
+	 * generate a baked dataset
+	 * manually called by developers if needed for test data
+	 */
+	public static void generateBakedData()
+	{
+
+
+		/*
+		 * fill the objects with random data
+		 */
+<span class="fc bfc" id="L30" title="All 2 branches covered.">		for (int i = 0; i &lt; 100; i++)</span>
+		{
+			/*
+			 * some of the random values need to be referenced multiple times
+			 * they get stored temporarily here
+			 */
+<span class="fc" id="L36">			String pagePath = generateBakedFileNames();</span>
+<span class="fc" id="L37">			String imagePath = generateBakedFileNames();</span>
+<span class="fc" id="L38">			String CSSPath = generateBakedFileNames();</span>
+<span class="fc" id="L39">			String JSPath = generateBakedFileNames();</span>
+
+			/*
+			 * generate random pages
+			 */
+<span class="fc" id="L44">			Website.Pages.addPage(pagePath, random.nextInt(100000), random.nextInt(100000), random.nextInt(100000), random.nextInt(100000), random.nextInt(100000), random.nextInt(100000), random.nextInt(100000), random.nextInt(100000), random.nextInt(100000));</span>
+
+			/*
+			 * generate random images
+			 */
+<span class="fc" id="L49">			Website.Images.addElement(imagePath, random.nextInt(100000));</span>
+
+			/*
+			 * generate random CSS
+			 */
+<span class="fc" id="L54">			Website.CSS.addElement(CSSPath, random.nextInt(100000));</span>
+
+			/*
+			 * generate random JS
+			 */
+<span class="fc" id="L59">			Website.JS.addElement(JSPath, random.nextInt(100000));</span>
+
+			/*
+			 * generate random archives
+			 */
+<span class="fc" id="L64">			Website.Archives.addElement(generateBakedFileNames(), random.nextInt(100000));</span>
+
+			/*
+			 * generate random videos
+			 */
+<span class="fc" id="L69">			Website.Videos.addElement(generateBakedFileNames(), random.nextInt(100000));</span>
+
+			/*
+			 * generate random videos
+			 */
+<span class="fc" id="L74">			Website.Audios.addElement(generateBakedFileNames(), random.nextInt(100000));</span>
+
+			/*
+			 * generate random uncategorized
+			 */
+<span class="fc" id="L79">			Website.Uncategorized.addElement(generateBakedFileNames(), random.nextInt(100000));</span>
+
+			/*
+			 * link the new random items together
+			 */
+<span class="fc" id="L84">			Website.Images.pageLinkToElement(pagePath, imagePath);</span>
+<span class="fc" id="L85">			Website.Images.pageLinkToElement(generateBakedFileNames(), imagePath);</span>
+<span class="fc" id="L86">			Website.Images.pageLinkToElement(generateBakedFileNames(), imagePath);</span>
+
+<span class="fc" id="L88">			Website.JS.pageLinkToElement(pagePath, JSPath);</span>
+<span class="fc" id="L89">			Website.JS.pageLinkToElement(generateBakedFileNames(), JSPath);</span>
+<span class="fc" id="L90">			Website.JS.pageLinkToElement(generateBakedFileNames(), JSPath);</span>
+
+<span class="fc" id="L92">			Website.CSS.pageLinkToElement(pagePath, CSSPath);</span>
+<span class="fc" id="L93">			Website.CSS.pageLinkToElement(generateBakedFileNames(), CSSPath);</span>
+<span class="fc" id="L94">			Website.CSS.pageLinkToElement(generateBakedFileNames(), CSSPath);</span>
+
+<span class="fc" id="L96">			Website.Pages.pageLinkToElement(pagePath, generateBakedFileNames(), &quot;Image&quot;);</span>
+<span class="fc" id="L97">			Website.Pages.pageLinkToElement(pagePath, generateBakedFileNames(), &quot;Image&quot;);</span>
+<span class="fc" id="L98">			Website.Pages.pageLinkToElement(pagePath, generateBakedFileNames(), &quot;Image&quot;);</span>
+
+<span class="fc" id="L100">			Website.Pages.pageLinkToElement(pagePath, JSPath, &quot;JS&quot;);</span>
+<span class="fc" id="L101">			Website.Pages.pageLinkToElement(pagePath, generateBakedFileNames(), &quot;JS&quot;);</span>
+<span class="fc" id="L102">			Website.Pages.pageLinkToElement(pagePath, generateBakedFileNames(), &quot;JS&quot;);</span>
+
+<span class="fc" id="L104">			Website.Pages.pageLinkToElement(pagePath, CSSPath, &quot;CSS&quot;);</span>
+<span class="fc" id="L105">			Website.Pages.pageLinkToElement(pagePath, generateBakedFileNames(), &quot;CSS&quot;);</span>
+<span class="fc" id="L106">			Website.Pages.pageLinkToElement(pagePath, generateBakedFileNames(), &quot;CSS&quot;);</span>
+		}
+<span class="fc" id="L108">	}</span>
+
+
+	/*
+	 * this function will generate baked filenames for program testing
+	 * gets called by the generateBakedData function, returns randomized file names as strings
+	 */
+	public static String generateBakedFileNames()
+	{
+		/*
+		 * store the directory + filename of agenerated item
+		 */
+<span class="fc" id="L120">		String fileName = &quot;/&quot;;</span>
+
+		/*
+		 * generate a random directory
+		 */
+<span class="fc bfc" id="L125" title="All 2 branches covered.">		for (int i = 0; i &lt; 10; i++)</span>
+		{
+			/*
+			 * grab a random character from the lettersNumbers object, add it to the string
+			 */
+<span class="fc" id="L130">			fileName += CLI.allowableCharacters[random.nextInt(CLI.allowableCharacters.length)];</span>
+		}
+
+		/*
+		 * generate a random filename inside of the directory
+		 */
+<span class="fc" id="L136">		fileName += '/';</span>
+
+<span class="fc bfc" id="L138" title="All 2 branches covered.">		for (int i = 0; i &lt; 10; i++)</span>
+		{
+			/*
+			 * grab a random character from the lettersNumbers object, add it to the string
+			 */
+<span class="fc" id="L143">			fileName += CLI.allowableCharacters[random.nextInt(CLI.allowableCharacters.length)];</span>
+		}
+
+<span class="fc" id="L146">		return fileName;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SearchPageHelpers.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">SearchPageHelpers.java</span></div><h1>SearchPageHelpers.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.io.File;
+import java.nio.file.FileSystems;
+
+/*
+ * this class will store the helpers for the SearchPage class
+ * handles things like finding specific page element types, adding things to objects, etc
+ */
+<span class="nc" id="L10">public class SearchPageHelpers extends SearchPage {</span>
+
+    /**
+     * this function will get the absolute directory of a file, but not the file itself
+     * @param pagePath
+     * @return absolute directory path
+     */
+    private static String getPageAbsoluteFolderPath(String pagePath) {
+<span class="fc" id="L18">        String absPagePath = URLToPathMapping.normalizePathSlash(FileSystems.getDefault().getPath(Website.baseDirectory + &quot;/&quot; + pagePath).normalize().toAbsolutePath().toString());</span>
+<span class="fc" id="L19">        int endIdx = absPagePath.lastIndexOf(&quot;/&quot;);</span>
+
+<span class="pc bpc" id="L21" title="1 of 2 branches missed.">        if(endIdx == -1) {</span>
+<span class="nc" id="L22">            return &quot;&quot;;</span>
+        }
+<span class="fc" id="L24">        return absPagePath.substring(0, endIdx);</span>
+    }
+
+
+    /**
+     * this function will get the absolute path of a specified file
+     * @param currFolder
+     * @param line
+     * @param prefixPattern
+     * @return absolute file path
+     */
+    private static String getAbsoluteFilePath(String currFolder, String line, String prefixPattern) {
+<span class="fc" id="L36">        int startIdx = line.indexOf(prefixPattern) + prefixPattern.length();</span>
+<span class="fc" id="L37">        int endIdx = line.indexOf('&quot;', startIdx);</span>
+        
+<span class="pc bpc" id="L39" title="3 of 6 branches missed.">        if(startIdx == -1 | endIdx == -1) {</span>
+<span class="nc" id="L40">            return &quot;&quot;;</span>
+        }
+<span class="fc" id="L42">        String relativePathToFile = line.substring(startIdx, endIdx);</span>
+<span class="fc" id="L43">        return URLToPathMapping.normalizePathSlash(FileSystems.getDefault().getPath(currFolder + &quot;/&quot; + relativePathToFile).normalize().toAbsolutePath().toString());</span>
+    }
+
+
+    /**
+     * this function will determine if a specified file is internal, or external
+     * @param absFilePath
+     * @return INTERNAL or EXTERNAL classification
+     */
+    private static SinglePageElement.Classification getFileClassification(String absFilePath) {
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (absFilePath.contains(Website.baseDirectory)) {</span>
+<span class="fc" id="L54">            return SinglePageElement.Classification.INTERNAL;</span>
+        } else {
+<span class="fc" id="L56">            return SinglePageElement.Classification.EXTERNAL;</span>
+        }
+    }
+
+
+    /**
+     * this function will find the absolute path of a specified external file
+     * @param absFilePath
+     * @return absolute external path
+     */
+    private static String findExternalPath(String absFilePath) {
+<span class="fc" id="L67">        final String updir = &quot;..&quot; + &quot;/&quot;;</span>
+<span class="fc" id="L68">        String upMovingDir = Website.baseDirectory;</span>
+        
+<span class="fc" id="L70">        String relativePath = &quot;&quot;;</span>
+<span class="fc" id="L71">        int startIdx = absFilePath.length();</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">        while(startIdx &gt; 0) {</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">            if(!absFilePath.contains(upMovingDir)) {</span>
+<span class="fc" id="L74">                int nextDirectoryIdx = upMovingDir.lastIndexOf(&quot;/&quot;);</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">                if(nextDirectoryIdx == -1) {</span>
+<span class="nc" id="L76">                    return absFilePath;</span>
+                }
+<span class="fc" id="L78">                upMovingDir = upMovingDir.substring(0, nextDirectoryIdx);</span>
+<span class="fc" id="L79">                relativePath += updir;</span>
+<span class="fc" id="L80">            } else {</span>
+<span class="fc" id="L81">                relativePath += absFilePath.substring(absFilePath.indexOf(upMovingDir) + upMovingDir.length() + &quot;/&quot;.length());</span>
+<span class="fc" id="L82">                return relativePath;</span>
+            }
+        }
+
+<span class="nc" id="L86">        return absFilePath;</span>
+    }
+
+
+    /**
+     * this function will get the information of a specified file
+     * @param line
+     * @param page
+     * @param prefixPattern
+     * @return SinglePageElement from data found
+     */
+    private static SinglePageElement getFileInfo(String line, SinglePage page, String prefixPattern) {
+<span class="fc" id="L98">        SinglePageElement file = new SinglePageElement();</span>
+
+<span class="fc" id="L100">        String currFolder = getPageAbsoluteFolderPath(page.getRelativePath());</span>
+<span class="fc" id="L101">        String absFilePath = getAbsoluteFilePath(currFolder, line, prefixPattern);</span>
+<span class="fc" id="L102">        SinglePageElement.Classification classification = getFileClassification(absFilePath);</span>
+
+        String relativePath;
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (classification == SinglePageElement.Classification.INTERNAL) {</span>
+<span class="fc" id="L106">            relativePath = URLToPathMapping.stripSiteRoot(absFilePath);</span>
+        } else {
+<span class="fc" id="L108">            relativePath = findExternalPath(absFilePath);</span>
+        }
+
+<span class="fc" id="L111">        file.setRelativePath(relativePath);</span>
+<span class="fc" id="L112">        file.setFileSizeBytes(determineFileSizeBytes(absFilePath));</span>
+<span class="fc" id="L113">        file.setClassification(classification);</span>
+<span class="fc" id="L114">        file.addReferencePage(page.getRelativePath());</span>
+
+<span class="fc" id="L116">        return file;</span>
+    }
+
+
+    /**
+     * this function will search the provided string for links to images
+     * @param line
+     * @param currentPage
+     * @param imagePrefixPattern
+     * @return SinglePageElement for an Image
+     */
+    public static SinglePageElement searchImage(String line, SinglePage currentPage, String imagePrefixPattern) {
+<span class="fc" id="L128">        SinglePageElement thisImage = getFileInfo(line, currentPage, imagePrefixPattern);</span>
+        
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        if (Website.Images.duplicateCheck(thisImage.getRelativePath())){</span>
+<span class="fc" id="L131">            Website.Images.List.add(thisImage);</span>
+        }
+        else {
+<span class="fc" id="L134">            Website.Images.pageLinkToElement(currentPage.getRelativePath(), thisImage.getRelativePath());</span>
+        }
+        
+<span class="fc" id="L137">        return thisImage;</span>
+    }
+
+
+    /**
+     * this function will search the provided string for links to JS
+     * @param line
+     * @param page
+     * @param jsPrefixPattern
+     * @return SinglePageElement for JS
+     */
+    public static SinglePageElement searchJS(String line, SinglePage page, String jsPrefixPattern) {
+<span class="fc" id="L149">        SinglePageElement element = getFileInfo(line, page, jsPrefixPattern);</span>
+
+<span class="fc bfc" id="L151" title="All 2 branches covered.">        if (Website.JS.duplicateCheck(element.getRelativePath())) {</span>
+<span class="fc" id="L152">            Website.JS.List.add(element);</span>
+        }
+
+<span class="fc" id="L155">        return element;</span>
+    }
+
+
+    /**
+     * this function will search the provided string for links to CSS
+     * @param line
+     * @param page
+     * @param cssPrefixPattern
+     * @return SinglePageElement for an CSS
+     */
+    public static SinglePageElement searchCSS(String line, SinglePage page, String cssPrefixPattern) {
+<span class="fc" id="L167">        SinglePageElement element = getFileInfo(line, page, cssPrefixPattern);</span>
+
+<span class="fc bfc" id="L169" title="All 2 branches covered.">        if (Website.CSS.duplicateCheck(element.getRelativePath())) {</span>
+<span class="fc" id="L170">            Website.CSS.List.add(element);</span>
+        }
+
+<span class="fc" id="L173">        return element;</span>
+    }
+
+
+    /**
+     * this function will search the provided string for links to other pages
+     * @param line
+     * @param currentPage
+     * @param prefixPattern
+     */
+    public static void searchLinks(String line, SinglePage currentPage, String prefixPattern) {
+        /*
+         * check if the link is a 404, ignore 404 links
+         * check if the link already exists in the page list
+         * do not create a new page if the link already exists
+         * still need to record the type of link,
+         * and store that attribute in the page that the link was found in
+         */
+<span class="fc" id="L191">        String currFolder = getPageAbsoluteFolderPath(currentPage.getRelativePath());</span>
+<span class="fc" id="L192">        String absFilePath = getAbsoluteFilePath(currFolder, line, prefixPattern);</span>
+
+<span class="fc" id="L194">        String link = line.trim().replace(prefixPattern, &quot;&quot;);</span>
+
+<span class="fc bfc" id="L196" title="All 2 branches covered.">        if (link.startsWith(&quot;#&quot;)) {</span>
+<span class="fc" id="L197">            currentPage.addIntraPageLink();</span>
+        }
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        else if (absFilePath.contains(Website.baseDirectory)) {</span>
+<span class="fc" id="L200">            File file = new File(absFilePath);</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">            if(file.exists()) {</span>
+<span class="fc" id="L202">                currentPage.addIntraSiteLink();</span>
+            } else {
+<span class="fc" id="L204">                CLI.throwMessage(currentPage.getRelativePath() + &quot; contains an erroneous link to &quot; + absFilePath);</span>
+            }
+<span class="fc" id="L206">        }</span>
+        else {
+<span class="fc" id="L208">            currentPage.addExternalLink();</span>
+        }
+<span class="fc" id="L210">    }</span>
+
+
+    /**
+     * Categorize the HTML link according to FileAnalyzer.FileTypes
+     * @param line
+     * @param page
+     * @return SinglePageElement for an other data file
+     */
+    public static SinglePageElement searchOther(String line, SinglePage page) {
+<span class="fc" id="L220">        FileAnalyzer.FileType fileType = FileAnalyzer.parseFileType(line);</span>
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">        if (fileType == FileAnalyzer.FileType.ERROR) {</span>
+<span class="nc" id="L222">            return null;</span>
+        }
+
+<span class="fc" id="L225">        String fileName = FileAnalyzer.parseFileName(line);</span>
+<span class="pc bpc" id="L226" title="1 of 2 branches missed.">        if (fileName.equals(&quot;&quot;)) {</span>
+<span class="nc" id="L227">            return null;</span>
+        }
+
+<span class="fc" id="L230">        SinglePageElement element = getFileInfo(line, page, &quot;&lt;a href=\&quot;&quot; + FileAnalyzer.htmlFileLinkIndicator);</span>
+
+        /*
+         * Add the file to the appropriate website elements list.
+         */
+<span class="pc bpc" id="L235" title="2 of 6 branches missed.">        switch (fileType) {</span>
+            case ERROR:
+<span class="nc" id="L237">                return null;</span>
+
+            case ARCHIVE:
+<span class="fc bfc" id="L240" title="All 2 branches covered.">                if (Website.Archives.duplicateCheck(element.getRelativePath())) {</span>
+<span class="fc" id="L241">                    Website.Archives.List.add(element);</span>
+                }
+                break;
+
+            case VIDEO:
+<span class="fc bfc" id="L246" title="All 2 branches covered.">                if (Website.Videos.duplicateCheck(element.getRelativePath())) {</span>
+<span class="fc" id="L247">                    Website.Videos.List.add(element);</span>
+                }
+                break;
+
+            case AUDIO:
+<span class="fc bfc" id="L252" title="All 2 branches covered.">                if (Website.Audios.duplicateCheck(element.getRelativePath())) {</span>
+<span class="fc" id="L253">                    Website.Audios.List.add(element);</span>
+                }
+                break;
+
+            case UNCATEGORIZED:
+<span class="fc bfc" id="L258" title="All 2 branches covered.">                if (Website.Uncategorized.duplicateCheck(element.getRelativePath())) {</span>
+<span class="fc" id="L259">                    Website.Uncategorized.List.add(element);</span>
+                }
+                break;
+        }
+
+<span class="fc" id="L264">        return element;</span>
+    }
+
+
+    /**
+     * this function will examine a specified file,
+     * and return the file size of that file in bytes
+     * @param filePath
+     * @return file size in bytes
+     */
+    public static double determineFileSizeBytes(String filePath) {
+<span class="fc" id="L275">        File file = new File(filePath);</span>
+<span class="fc" id="L276">        return file.length();</span>
+    }
+    
+
+    /**
+     *  determines if the page is within the boundaries of the directory specified by user
+     *  takes input of a string and returns true if the directory of the page is the same 
+     *  as the directory specified by the user and false if it is not
+     * @param relativePath
+     * @param baseDirectory
+     * @return true if within the boundaries, false otherwise
+     */
+    public static boolean validateBoundaries (String relativePath, String baseDirectory) {
+
+        /*
+         * convert the provided file and directory into absolute paths
+         */
+<span class="fc" id="L293">        String absBasePath = FileSystems.getDefault().getPath(baseDirectory).normalize().toAbsolutePath().toString();</span>
+<span class="fc" id="L294">        String absPagePath = FileSystems.getDefault().getPath(relativePath).normalize().toAbsolutePath().toString();</span>
+
+        /*
+         * return the result saying that the file is contained inside of the website or not
+         */
+<span class="fc" id="L299">        return absPagePath.contains(absBasePath);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

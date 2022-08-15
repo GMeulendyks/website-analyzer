@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>URLToPathMapping.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">URLToPathMapping.java</span></div><h1>URLToPathMapping.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+
+/*
+ * this class contains various helper functions that will manipulate file paths, and URLs
+ * also helps normalize URLs/URIs
+ */
+<span class="nc" id="L12">public class URLToPathMapping {</span>
+
+	/**
+     * checks if a URL is correct without visiting the site
+	 * takes a URL as an input, returns true/false based on findings
+     * @param url
+     * @return true if valid, false if invalid
+     */
+	static boolean validateURL(String url)
+	{
+		/*
+		 * checks if malformed/contains syntax errors/is readable, throws
+		 * URISyntaxException and returns false if it is
+		 */
+         try
+		 {
+<span class="fc" id="L28">			URI urlToCheck = new URI(url);</span>
+			/*
+			 * convert to relative path, check if internal
+			 */
+<span class="fc" id="L32">			String convertedURLToCheck = URLToPathMapping.stripSiteRootURL(urlToCheck.toString());</span>
+			/*
+			 * check if file pointed to exists somewhere in the website 
+			 * duplicateCheck returns true if a relative path does not already exist 
+			 * and false if it does exist;
+			 * the return value of duplicateCheck is inverted for clarity, such that 
+			 * existsInWebsite will be true if it exists in the website under analysis
+			 * and false otherwise
+			 */
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">			Boolean existsInWebsite = !(Website.Pages.duplicateCheck(convertedURLToCheck));</span>
+
+			/*
+			 * internal and valid
+			 */
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">			if(existsInWebsite)</span>
+			{
+<span class="nc" id="L48">				return true;</span>
+			}
+
+			/*
+			 * internal and invalid
+			 */
+			else
+			{
+				/*
+				 * external and invalid
+				 */
+<span class="fc" id="L59">				int colon = urlToCheck.toString().indexOf(':');</span>
+
+<span class="fc bfc" id="L61" title="All 2 branches covered.">				if (colon &lt; 3)</span>
+				{
+<span class="fc" id="L63">					return false;</span>
+				}   
+				     
+<span class="fc" id="L66">				String protocol = urlToCheck.toString().substring(0, colon);</span>
+
+<span class="pc bpc" id="L68" title="3 of 8 branches missed.">				if (!protocol.equals(&quot;http&quot;) &amp;&amp; !protocol.equals(&quot;https&quot;) &amp;&amp; !protocol.equals(&quot;ftp&quot;) &amp;&amp; !protocol.equals(&quot;file&quot;))</span>
+				{
+<span class="fc" id="L70">					return false;</span>
+				}
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">				else if (urlToCheck.getHost() == null)</span>
+				{
+<span class="nc" id="L74">					return false;</span>
+				}
+				else
+				{
+					/**
+					 * external and valid
+					 */
+<span class="fc" id="L81">					return true;</span>
+				}
+			}
+
+		/**
+		 * internal/external and invalid
+		 */
+        } 
+<span class="nc" id="L89">        catch (URISyntaxException e) </span>
+        {
+<span class="nc" id="L91">            return false;            </span>
+        }
+    }
+
+
+	/**
+	 * this function strips double slashes, as well as converts all slashes to
+	 * forward slashes
+	 * this helps normalize file paths and directories
+	 * takes a path string as an input, returns a normalized path as a string for output
+	 * @param path
+	 * @return string for the path with /
+	 */
+	public static String normalizePathSlash(String path) {
+		/*
+		 * find and replace all back slashes with forward slashes
+		 */
+<span class="fc" id="L108">		path = path.replace(&quot;\\&quot;, &quot;/&quot;);</span>
+
+		/*
+		 * find and replace all instances of double forward slashes
+		 * continue doing this as many times as needed to get a single slash in each
+		 * position
+		 */
+<span class="fc bfc" id="L115" title="All 2 branches covered.">		while (path.contains(&quot;//&quot;))</span>
+		{
+<span class="fc" id="L117">			path = path.replace(&quot;//&quot;, &quot;/&quot;);</span>
+		}
+<span class="fc" id="L119">		return path;</span>
+	}
+
+
+	/**
+	 * @param checkPath
+	 * @return true if checkPath contains the directory or URLs specified in the
+	 *         CLI, false otherwise.
+	 */
+	public static Boolean pathContainsSiteRoot(String checkPath) {
+
+<span class="nc bnc" id="L130" title="All 2 branches missed.">		if (checkPath.contains(Website.baseDirectory))</span>
+		{
+<span class="nc" id="L132">			return true;</span>
+		}
+<span class="nc" id="L134">		return false;</span>
+	}
+
+
+	/**
+	 * @param checkPath
+	 * @return true if checkPath contains the URLs specified in the CLI, false
+	 *         otherwise.
+	 */
+	public static Boolean urlContainsSiteRoot(String checkPath)
+	{
+
+<span class="nc bnc" id="L146" title="All 2 branches missed.">		for (int i = 0; i &lt; Website.inputURLS.size(); i++)</span>
+		{
+
+<span class="nc bnc" id="L149" title="All 2 branches missed.">			if (checkPath.contains(Website.inputURLS.get(i)))</span>
+			{
+<span class="nc" id="L151">				return true;</span>
+			}
+		}
+
+<span class="nc" id="L155">		return false;</span>
+	}
+
+
+	/**
+	 * this function will strip the site root directory from the absolute path of a file
+	 * @param toConvert
+	 * @return string of path without root dir
+	 */
+	public static String stripSiteRoot(String toConvert) {
+
+<span class="fc" id="L166">		Path absToConvert = FileSystems.getDefault().getPath(toConvert);</span>
+
+<span class="fc" id="L168">		absToConvert = absToConvert.toAbsolutePath();</span>
+
+<span class="fc" id="L170">		Path absBaseDir = FileSystems.getDefault().getPath(Website.baseDirectory);</span>
+
+<span class="fc" id="L172">		absBaseDir = absBaseDir.toAbsolutePath();</span>
+
+<span class="pc bpc" id="L174" title="1 of 2 branches missed.">		if (absToConvert.toString().contains(absBaseDir.toString())) {</span>
+			/*
+			 * Strip site root from a directory
+			 */
+
+<span class="fc" id="L179">			int endOfStrip = absBaseDir.toString().length();</span>
+
+<span class="fc" id="L181">			toConvert = absToConvert.toString().substring(endOfStrip);</span>
+
+<span class="fc" id="L183">			toConvert = toConvert.substring(1);</span>
+			
+<span class="fc bfc" id="L185" title="All 2 branches covered.">			if(toConvert.contains(&quot;\\&quot;)){</span>
+<span class="fc" id="L186">				toConvert = toConvert.replaceAll(&quot;\\\\&quot;, &quot;/&quot;);</span>
+				}
+<span class="fc" id="L188">			return toConvert;</span>
+		}
+<span class="nc" id="L190">		return toConvert;</span>
+	}
+
+
+	/**
+	 * this function will strip the site root URL from a specified URL by 
+	 * @param toConvert
+	 * @return string URL without site root
+	 */
+	public static String stripSiteRootURL(String toConvert)
+	{
+		try
+		{
+<span class="fc" id="L203">			URI urlToConvert = new URI(toConvert);</span>
+			
+<span class="fc" id="L205">			Path absUrlToConvert = FileSystems.getDefault().getPath(urlToConvert.getRawPath()).normalize();</span>
+
+<span class="fc" id="L207">			absUrlToConvert = absUrlToConvert.toAbsolutePath();</span>
+
+<span class="pc bfc" id="L209" title="All 2 branches covered.">			for (int i = 0; i &lt; Website.inputURLS.size(); i++)</span>
+			{
+
+<span class="fc" id="L212">				URI givenURL = new URI(Website.inputURLS.get(i));</span>
+				
+<span class="fc" id="L214">				Path absURL = FileSystems.getDefault().getPath(givenURL.getRawPath()).normalize();</span>
+
+<span class="fc" id="L216">				absURL = absURL.toAbsolutePath();</span>
+
+<span class="pc bpc" id="L218" title="1 of 2 branches missed.">				if (absUrlToConvert.toString().contains(absURL.toString()))</span>
+				{
+					/*
+					 * Strip site root from a URL
+					 */
+
+<span class="fc" id="L224">					int endOfStrip = absURL.toString().length();</span>
+
+<span class="fc" id="L226">					toConvert = absUrlToConvert.toString().substring(endOfStrip);</span>
+
+<span class="fc" id="L228">					toConvert = toConvert.substring(1);</span>
+
+<span class="fc" id="L230">					toConvert = FileSystems.getDefault().getPath(toConvert).normalize().toString();</span>
+
+<span class="pc bpc" id="L232" title="1 of 2 branches missed.">					if(toConvert.contains(&quot;\\&quot;))</span>
+					{
+<span class="fc" id="L234">						toConvert = toConvert.replaceAll(&quot;\\\\&quot;, &quot;/&quot;);</span>
+					}
+<span class="fc" id="L236">					return toConvert;</span>
+				}
+			}
+		}
+<span class="nc" id="L240">		catch (URISyntaxException e)</span>
+		{
+<span class="nc" id="L242">			System.err.println(&quot;invalid url passed to StripSiteRootURL&quot;);</span>
+<span class="fc" id="L243">		}</span>
+
+<span class="fc" id="L245">		return toConvert;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

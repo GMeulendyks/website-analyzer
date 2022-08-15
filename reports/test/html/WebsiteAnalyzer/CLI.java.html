@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CLI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">CLI.java</span></div><h1>CLI.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+/*
+ * this class is intended to handle interactions with the user
+ * other functions here will handle input related actions, such as input validation
+ * this will also trigger error messages back to the user if an unacceptable condition is encountered
+ */
+<span class="nc" id="L17">public class CLI {</span>
+
+	/*
+	 * pre-determined set of characters that should appear in a filename
+	 */
+<span class="fc" id="L22">	final static char allowableCharacters[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',</span>
+	'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+	'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6',
+	'7', '8', '9', '-', '_', '.', '+'};
+
+	/**
+	 * this function will validate input from the user as an array of strings
+	 * if an input is invalid, the input will be sent back to the user, and an error will be displayed
+	 * to err out.
+	 * the program will automatically terminate upon an input validation failure
+	 * @param arguments given from command line
+	 * @return true if inputs match those given in requirements definition(directory, url1, url2,...),
+	 * false otherwise
+	 */
+	final public static boolean inputValidation(final String[] userInput) 
+	{
+		/*
+		 * check if no arguements are provided by the user
+		 */
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		if (userInput.length == 0)</span>
+		{
+<span class="fc" id="L43">			throwError(&quot;No arguments provided&quot;);</span>
+<span class="fc" id="L44">			return false;</span>
+		}
+		else
+		{
+			/*
+			 * validate the provided inputs
+			 */
+<span class="fc bfc" id="L51" title="All 2 branches covered.">			for(int i = 0; i &lt; userInput.length; i++)</span>
+			{
+				/*
+				 * check if URL is malformed
+				 */
+<span class="fc bfc" id="L56" title="All 2 branches covered.">				if(i &gt; 0)</span>
+				{
+					try
+					{
+<span class="fc" id="L60">						URL testURL = new URL(userInput[i]);</span>
+						/*
+						 *  double-check if URL is malformed
+						 */
+						try
+						{
+<span class="fc" id="L66">							testURL.toURI();	</span>
+						}
+<span class="nc" id="L68">						catch (URISyntaxException e)</span>
+						{
+<span class="nc" id="L70">							throwError(&quot;Malformed URI in arguments&quot;);</span>
+<span class="nc" id="L71">							return false;</span>
+<span class="fc" id="L72">						}</span>
+
+					}
+<span class="fc" id="L75">					catch (MalformedURLException e)</span>
+					{
+<span class="fc" id="L77">						throwError(&quot;Malformed URL in arguments&quot;);</span>
+<span class="fc" id="L78">						return false;</span>
+<span class="fc" id="L79">					}</span>
+				}
+
+<span class="fc" id="L82">				final Path tempPath = Paths.get(userInput[0]);</span>
+				
+				/*
+				 * Check if directory exists
+				 */
+<span class="fc bfc" id="L87" title="All 2 branches covered.">				if(Files.exists(tempPath) != true)</span>
+				{
+<span class="fc" id="L89">					throwError(&quot;Directory does not exist&quot;);</span>
+<span class="fc" id="L90">					return false;</span>
+				};
+
+				/*
+				 * Check if directory contains less than 1 page
+				 */
+<span class="fc" id="L96">				try(DirectoryStream&lt;Path&gt; tempDir = Files.newDirectoryStream(tempPath))</span>
+				{
+					/*
+					 * IO Exception
+					 */
+<span class="fc bfc" id="L101" title="All 2 branches covered.">					if(tempDir.iterator().hasNext() != true)</span>
+					{
+<span class="fc" id="L103">						throwError(&quot;Directory does not contain any pages&quot;);</span>
+<span class="fc" id="L104">						return false;</span>
+					}
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">				}</span>
+<span class="nc" id="L107">				catch (IOException e)</span>
+				{
+<span class="nc" id="L109">					e.printStackTrace();</span>
+<span class="fc" id="L110">				}</span>
+			}
+		}
+
+		/*
+		 * no errors found during the input validation, return true
+		 */
+<span class="fc" id="L117">		return true;</span>
+	}
+
+	
+	/**
+	 * this function will store the inputs from the user
+	 * takes in an array of strings as the user input, returns nothing
+	 * @param args
+	 */
+	public static void storeUserInput(String args[])
+	{
+		/*
+		 * store the now validated user provided base directory
+		 * only do this if the args array has something in it
+		 */
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">		if (args.length &gt; 0)</span>
+		{
+<span class="fc" id="L134">			Website.baseDirectory = URLToPathMapping.normalizePathSlash(args[0]);</span>
+		}
+		
+		/*
+		 * loop through the input URLs and store them
+		 * only do this is the args array has any URLs to store
+		 */
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">		if (args.length &gt; 1)</span>
+		{
+<span class="fc bfc" id="L143" title="All 2 branches covered.">			for (int i = 1; i &lt; args.length; i++)</span>
+			{
+<span class="fc" id="L145">				Website.inputURLS.add(args[i]);</span>
+			}
+		}
+<span class="fc" id="L148">	}</span>
+
+
+	/**
+	 * this function will throw a specified error
+	 * takes in an error as a string, sends the error to the user, returns nothing
+	 * @param errorMessage
+	 */
+	public static void throwError(String errorMessage)
+	{
+		/*
+		 * print the specified error to where-ever it is supposed to go
+		 */
+<span class="fc" id="L161">		System.err.println(&quot;Error encountered: &quot; + errorMessage + &quot; Program must terminate!&quot;);</span>
+<span class="fc" id="L162">	}</span>
+
+
+	/**
+	 * this function will send information to the user
+	 * takes a message in as a string, sends it to the user, returns nothing
+	 * @param message
+	 */
+	public static void throwMessage(String message)
+	{
+		/*
+		 * send the message to the user
+		 */
+<span class="fc" id="L175">		System.out.println(message);</span>
+<span class="fc" id="L176">	}</span>
+
+	/**
+	 * Main Function
+	 * takes in user arguements as an array of strings, returns nothing
+	 * @param args
+	 */
+	public static void main(String[] args)
+	{
+		/* 
+		 * send the user input to inputValidation
+		 * this will generate errors based on the user specified data
+		 * do not continue the program if input validation fails
+		 */
+<span class="pc bpc" id="L190" title="1 of 2 branches missed.">		if (inputValidation(args))</span>
+		{
+			/*
+			 * store the now validated user input(s)
+			 */
+<span class="fc" id="L195">			storeUserInput(args);</span>
+
+			/*
+			 * search the user specified directory for HTML files recursively
+			 */
+<span class="fc" id="L200">			FileFinder.searchFiles(Website.baseDirectory);</span>
+
+			/*
+			 * parse throught the above list of HTML pages
+			 * search each page for various elements such as images, CSS, etc
+			 */
+<span class="fc" id="L206">			SearchPage.searchPages(Website.baseDirectory);</span>
+
+			/*
+			 * now that all the data has been harvested, send it all to be output
+			 * TXT, XLSX, JSON output files
+			 */
+<span class="fc" id="L212">			FileWriting.outputAllFiles(Website.Pages, Website.Images, Website.Archives, Website.Videos, Website.Audios, Website.CSS, Website.JS, Website.Uncategorized);</span>
+		}
+<span class="fc" id="L214">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

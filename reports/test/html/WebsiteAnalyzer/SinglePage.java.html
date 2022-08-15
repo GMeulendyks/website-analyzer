@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SinglePage.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">SinglePage.java</span></div><h1>SinglePage.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.util.ArrayList;
+
+/*
+ * this class is intended to be an object that will contain the attributes of a single page from a website
+ * if there are N pages in a website, we will create N of these objects to represent the pages
+ */
+public class SinglePage implements Comparable&lt;SinglePage&gt;{
+    /* Variables */
+ 
+    /*
+     * store the relative path of this page
+     */
+    private String relativePath;
+    
+    /*
+     * counters for images on this page
+     */
+    private int numInternalImages;
+    private int numExternalImages;
+    
+    /*
+     * counters for scripting on this page
+     */
+    private int numInternalJavaScripts;
+    private int numExternalJavaScripts;
+    private int numInternalCascadingStyleSheets;
+    private int numExternalCascadingStyleSheets;
+    
+    /*
+     * counters for links on this page
+     */
+    private int numIntraPageLinks;
+    private int numIntraSiteLinks;
+    private int numExternalLinks;
+
+    /*
+     * arrayLists to track the elements this page links to.
+     */
+<span class="fc" id="L41">    ArrayList&lt;String&gt; referencingImages = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L42">    ArrayList&lt;String&gt; referencingCSS = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L43">    ArrayList&lt;String&gt; referencingJS = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L44">    ArrayList&lt;String&gt; referencingArchive = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L45">    ArrayList&lt;String&gt; referencingVideo = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L46">    ArrayList&lt;String&gt; referencingAudio = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L47">    ArrayList&lt;String&gt; referencingUncategorized = new ArrayList&lt;String&gt;();</span>
+    
+    /*
+     * size of all the images on this page combined
+     * this will not get populated until the program has finished discovering everything
+     * rounding will be performed once the program is ready to generate an output
+     * this double will not be populated manually, the program will fill this at the end
+     */
+    double PageSize;
+
+    /* Constructors */
+    /**
+     * Default (empty) constructor SinglePage
+     */
+    public SinglePage()
+<span class="fc" id="L62">    {</span>
+<span class="fc" id="L63">        this.relativePath = &quot;&quot;;</span>
+<span class="fc" id="L64">        this.numInternalImages = 0;</span>
+<span class="fc" id="L65">        this.numExternalImages = 0;</span>
+<span class="fc" id="L66">        this.numInternalJavaScripts = 0;</span>
+<span class="fc" id="L67">        this.numExternalJavaScripts = 0;</span>
+<span class="fc" id="L68">        this.numInternalCascadingStyleSheets = 0;</span>
+<span class="fc" id="L69">        this.numExternalCascadingStyleSheets = 0;</span>
+<span class="fc" id="L70">        this.numIntraPageLinks = 0;</span>
+<span class="fc" id="L71">        this.numIntraSiteLinks = 0;</span>
+<span class="fc" id="L72">        this.numExternalLinks = 0;</span>
+<span class="fc" id="L73">        this.PageSize = 0.0;</span>
+<span class="fc" id="L74">    }</span>
+
+    /**
+     * constructor with specified relativePath
+     * @param relativePathInput
+     */
+    public SinglePage(String relativePathInput)
+<span class="fc" id="L81">    {</span>
+<span class="fc" id="L82">    this.relativePath = relativePathInput;</span>
+<span class="fc" id="L83">    numInternalImages = 0;</span>
+<span class="fc" id="L84">    numExternalImages = 0;</span>
+<span class="fc" id="L85">    numInternalJavaScripts = 0;</span>
+<span class="fc" id="L86">    numExternalJavaScripts = 0;</span>
+<span class="fc" id="L87">    numInternalCascadingStyleSheets = 0;</span>
+<span class="fc" id="L88">    numExternalCascadingStyleSheets = 0;</span>
+<span class="fc" id="L89">    numIntraPageLinks = 0;</span>
+<span class="fc" id="L90">    numIntraSiteLinks = 0;</span>
+<span class="fc" id="L91">    numExternalLinks = 0;</span>
+<span class="fc" id="L92">    PageSize = 0.0;</span>
+<span class="fc" id="L93">    }</span>
+    
+
+    /* Setters */
+    /* 
+     * Set relativePath  
+     */
+    public void setRelativePath(String s)
+    {
+<span class="fc" id="L102">        this.relativePath = s;</span>
+<span class="fc" id="L103">    }</span>
+
+    /* 
+     * Set numInternalImages  
+     */
+    public void setnumInternalImages(int x)
+    {
+<span class="fc" id="L110">        this.numInternalImages = x;</span>
+<span class="fc" id="L111">    }</span>
+
+    /* 
+     * Set numExternalImages  
+     */
+    public void setnumExternalImages(int x)
+    {
+<span class="fc" id="L118">        this.numExternalImages = x;</span>
+<span class="fc" id="L119">    }</span>
+
+    /* 
+     * Set numInternalJavaScripts  
+     */
+    public void setnumInternalJavaScripts(int x)
+    {
+<span class="fc" id="L126">        this.numInternalJavaScripts = x;</span>
+<span class="fc" id="L127">    }</span>
+
+    /* 
+     * Set numExternalJavaScripts  
+     */
+    public void setnumExternalJavaScripts(int x)
+    {
+<span class="fc" id="L134">        this.numExternalJavaScripts = x;</span>
+<span class="fc" id="L135">    }</span>
+
+    /* 
+     * Set numInternalCascadingStyleSheets  
+     */
+    public void setnumInternalCascadingStyleSheets(int x)
+    {
+<span class="fc" id="L142">        this.numInternalCascadingStyleSheets = x;</span>
+<span class="fc" id="L143">    }</span>
+
+    /* 
+     * Set numExternalCascadingStyleSheets  
+     */
+    public void setnumExternalCascadingStyleSheets(int x)
+    {
+<span class="fc" id="L150">        this.numExternalCascadingStyleSheets = x;</span>
+<span class="fc" id="L151">    }</span>
+
+    /* 
+     * Set numIntraPageLinks  
+     */
+    public void setnumIntraPageLinks(int x)
+    {
+<span class="fc" id="L158">        this.numIntraPageLinks = x;</span>
+<span class="fc" id="L159">    }</span>
+
+    /* 
+     * Set numInternalImages  
+     */
+    public void setnumIntraSiteLinks(int x)
+    {
+<span class="fc" id="L166">        this.numIntraSiteLinks = x;</span>
+<span class="fc" id="L167">    }</span>
+
+    /* 
+     * Set numExternalLinks  
+     */
+    public void setnumExternalLinks(int x)
+    {
+<span class="fc" id="L174">        this.numExternalLinks = x;</span>
+<span class="fc" id="L175">    }</span>
+
+    /* 
+     * Set PageSize  
+     */
+    public void setPageSize(Double x)
+    {
+<span class="nc" id="L182">        this.PageSize = x;</span>
+<span class="nc" id="L183">    }</span>
+
+    /* Getters */
+    /* 
+    * Get relativePath
+    */
+    public String getRelativePath()
+    {
+<span class="fc" id="L191">        return this.relativePath;</span>
+    }
+
+    /* 
+     * get numInternalImages  
+     */
+    public int getnumInternalImages()
+    {
+<span class="fc" id="L199">        return this.numInternalImages;</span>
+    }
+
+    /* 
+     * get numExternalImages  
+     */
+    public int getnumExternalImages()
+    {
+<span class="fc" id="L207">        return this.numExternalImages;</span>
+    }
+
+    /* 
+     * get numInternalJavaScripts  
+     */
+    public int getnumInternalJavaScripts()
+    {
+<span class="fc" id="L215">        return this.numInternalJavaScripts;</span>
+    }
+
+    /* 
+     * get numExternalJavaScripts  
+     */
+    public int getnumExternalJavaScripts()
+    {
+<span class="fc" id="L223">        return this.numExternalJavaScripts;</span>
+    }
+
+    /* 
+     * get numInternalCascadingStyleSheets  
+     */
+    public int getnumInternalCascadingStyleSheets()
+    {
+<span class="fc" id="L231">        return this.numInternalCascadingStyleSheets;</span>
+    }
+
+    /* 
+     * get numExternalCascadingStyleSheets  
+     */
+    public int getnumExternalCascadingStyleSheets()
+    {
+<span class="fc" id="L239">        return this.numExternalCascadingStyleSheets;</span>
+    }
+
+    public int getNumArchives() {
+<span class="nc" id="L243">        return this.referencingArchive.size();</span>
+    }
+
+    public int getNumVideo() {
+<span class="nc" id="L247">        return this.referencingVideo.size();</span>
+    }
+
+    public int getNumAudio() {
+<span class="nc" id="L251">        return this.referencingAudio.size();</span>
+    }
+
+    public int getNumUncategorized() {
+<span class="nc" id="L255">        return this.referencingUncategorized.size();</span>
+    }
+
+    /* 
+     * get numIntraPageLinks  
+     */
+    public int getnumIntraPageLinks()
+    {
+<span class="fc" id="L263">        return this.numIntraPageLinks;</span>
+    }
+
+    /* 
+     * get numIntraSiteLinks  
+     */
+    public int getnumIntraSiteLinks()
+    {
+<span class="fc" id="L271">        return this.numIntraSiteLinks;</span>
+    }
+
+    /* 
+     * get numExternalLinks  
+     */
+    public int getnumExternalLinks()
+    {
+<span class="fc" id="L279">        return this.numExternalLinks;</span>
+    }
+
+    /* 
+     * get PageSize  
+     */
+    public double getPageSize()
+    {
+<span class="nc" id="L287">        return this.PageSize;</span>
+    }
+
+    /* Overrides */
+    /**
+     * Set the hashing method for SinglePage
+     * @return hashcode
+     */
+    @Override
+    public int hashCode()
+    {
+<span class="pc bpc" id="L298" title="1 of 2 branches missed.">        if (relativePath.isEmpty())</span>
+        {
+<span class="nc" id="L300">            return 0;</span>
+        }
+        else
+        {
+<span class="fc" id="L304">            return relativePath.toLowerCase().hashCode();</span>
+        }
+    }
+
+
+    /**
+     * Set the comparison method for SinglePage
+     * @param rhs
+     * @return true if object paths match, false otherwise
+     */
+    @Override
+    public boolean equals(Object rhs)
+    {
+        /*
+         * make sure that the object being compared is of the correct type
+         */
+<span class="pc bpc" id="L320" title="1 of 2 branches missed.">        if (!(rhs instanceof SinglePage))</span>
+        {
+<span class="nc" id="L322">            return false;</span>
+        }
+
+        /*
+         * return true if there is a match
+         */
+<span class="fc" id="L328">        return this.relativePath.equals(((SinglePage) rhs).relativePath);</span>
+    }
+
+
+    /**
+     * @return int of compared paths
+     */
+    @Override
+    public int compareTo(SinglePage RHS)
+    {
+<span class="fc" id="L338">        return this.relativePath.compareTo(RHS.relativePath);</span>
+    }
+
+    /* functions */
+    /**
+     * function to add image to page
+     * URI &amp; size 
+     * (if size=0 -&gt; external, else size &gt; 0 -&gt; internal)
+     * @param image
+     */
+    public void addImage(SinglePageElement image)
+    {
+        // add image URI to list of images
+<span class="fc" id="L351">        referencingImages.add(image.getRelativePath());</span>
+        // increment image count for internal or external
+        // if internal then add size
+<span class="fc bfc" id="L354" title="All 2 branches covered.">        if (image.getClassification() == SinglePageElement.Classification.INTERNAL) {</span>
+<span class="fc" id="L355">            this.PageSize += image.getFileSizeBytes();</span>
+<span class="fc" id="L356">            this.numInternalImages++;</span>
+        }
+<span class="pc bpc" id="L358" title="1 of 2 branches missed.">        else if (image.getClassification() == SinglePageElement.Classification.EXTERNAL) {this.numExternalImages++;}   </span>
+<span class="fc" id="L359">    }</span>
+
+
+    /**
+     * this function will add one JS entry to this page
+     * @param js
+     */
+    public void addJs(SinglePageElement js) {
+<span class="pc bpc" id="L367" title="1 of 2 branches missed.">        if (referencingJS.contains(js.getRelativePath())) {</span>
+<span class="nc" id="L368">            return;</span>
+        }
+
+<span class="fc" id="L371">        referencingJS.add(js.getRelativePath());</span>
+<span class="fc bfc" id="L372" title="All 2 branches covered.">        if (js.getClassification() == SinglePageElement.Classification.INTERNAL) {</span>
+<span class="fc" id="L373">            this.numInternalJavaScripts++;</span>
+        }
+        else {
+<span class="fc" id="L376">            this.numExternalJavaScripts++;</span>
+        }
+<span class="fc" id="L378">    }</span>
+
+
+    /**
+     * this function will add one CSS entry to this page
+     * @param css
+     */
+    public void addCss(SinglePageElement css) {
+<span class="pc bpc" id="L386" title="1 of 2 branches missed.">        if (referencingCSS.contains(css.getRelativePath())) {</span>
+<span class="nc" id="L387">            return;</span>
+        }
+
+<span class="fc" id="L390">        referencingCSS.add(css.getRelativePath());</span>
+<span class="fc bfc" id="L391" title="All 2 branches covered.">        if (css.getClassification() == SinglePageElement.Classification.INTERNAL) {</span>
+<span class="fc" id="L392">            this.numInternalCascadingStyleSheets++;</span>
+        }
+        else {
+<span class="fc" id="L395">            this.numExternalCascadingStyleSheets++;</span>
+        }
+<span class="fc" id="L397">    }</span>
+
+
+    /**
+     * this function will add one uncategorized entry to this page
+     * @param other
+     */
+    public void addOther(SinglePageElement other) {
+<span class="fc" id="L405">        FileAnalyzer.FileType fileType = FileAnalyzer.parseFileTypeFromName(other.getRelativePath());</span>
+
+<span class="pc bpc" id="L407" title="2 of 6 branches missed.">        switch (fileType) {</span>
+            case ERROR:
+<span class="nc" id="L409">                return;</span>
+
+            case ARCHIVE:
+<span class="pc bpc" id="L412" title="1 of 2 branches missed.">                if (!referencingArchive.contains(other.getRelativePath())) {</span>
+<span class="fc" id="L413">                    referencingArchive.add(other.getRelativePath());</span>
+                }
+                break;
+
+            case VIDEO:
+<span class="pc bpc" id="L418" title="1 of 2 branches missed.">                if (!referencingVideo.contains(other.getRelativePath())) {</span>
+<span class="fc" id="L419">                    referencingVideo.add(other.getRelativePath());</span>
+                }
+                break;
+
+            case AUDIO:
+<span class="pc bpc" id="L424" title="1 of 2 branches missed.">                if (!referencingAudio.contains(other.getRelativePath())) {</span>
+<span class="fc" id="L425">                    referencingAudio.add(other.getRelativePath());</span>
+                }
+                break;
+
+            case UNCATEGORIZED:
+<span class="pc bpc" id="L430" title="1 of 2 branches missed.">                if (!referencingUncategorized.contains(other.getRelativePath())) {</span>
+<span class="fc" id="L431">                    referencingUncategorized.add(other.getRelativePath());</span>
+                }
+                break;
+        }
+<span class="fc" id="L435">    }</span>
+
+    /**
+     * this function will increment number of Intra-Page links on the page by 1
+     */
+<span class="fc" id="L440">    public void addIntraPageLink() { numIntraPageLinks++; } </span>
+
+    /**
+     * this function will increment number of Intra-Site links on the page by 1
+     */
+<span class="fc" id="L445">    public void addIntraSiteLink() { numIntraSiteLinks++; } </span>
+
+    /**
+     * this function will increment number of external links on the page by 1
+     */
+<span class="fc" id="L450">    public void addExternalLink() { numExternalLinks++; } </span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

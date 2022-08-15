@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FileFinder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">FileFinder.java</span></div><h1>FileFinder.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+/*
+ * this class is responsible for recursively searching the user specified directory
+ * will open every file and directory, searching for HTML content
+ */
+<span class="nc" id="L12">public class FileFinder {</span>
+    
+    /**
+     * search everything in a directory
+     * if a file is found, check if it contains HTML, if HTML is found, add the file to the pageList
+     * if a directory is found, recursively call the function again with that new directory
+     * takes in a file directory to be searched, returns nothing
+     * @param specifiedDirectory
+     */
+    private static void recurvieFileSearcher(File specifiedDirectory)
+    {
+        /*
+         * interate through everything in THIS directory
+         */
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        for (File fileName : specifiedDirectory.listFiles())</span>
+        {
+            /*
+             * if a sub-directory is found, recursively search it
+             */
+<span class="fc bfc" id="L31" title="All 2 branches covered.">            if (fileName.isDirectory())</span>
+            {
+<span class="fc" id="L33">                recurvieFileSearcher(fileName);</span>
+            }
+
+            /*
+             * if a non-directory file object is found, check if it contains HTML
+             */
+<span class="fc bfc" id="L39" title="All 2 branches covered.">            else if (containsHTML(fileName))</span>
+            {
+                /*
+                 * check to make sure this is not an error page
+                 * if this is NOT an error page, continue
+                 */
+<span class="fc bfc" id="L45" title="All 2 branches covered.">                if (!pageContainsError(fileName))</span>
+                {
+                    /*
+                     * create a temporary page object with the specified filename
+                     */
+<span class="fc" id="L50">                    SinglePage newPage = new SinglePage();</span>
+<span class="fc" id="L51">                    newPage.setRelativePath(URLToPathMapping.normalizePathSlash(URLToPathMapping.stripSiteRoot(fileName.toString())));</span>
+
+                    /*
+                     * add the new filename to the page list, and then continue recursively searching
+                     */
+<span class="fc" id="L56">                    Website.Pages.List.add(newPage);</span>
+                }
+            }
+            else
+            {
+                /*
+                 * this is not a directory or an HTML contianing file
+                 * additional handling may be added here later if desired/needed
+                 */
+            }
+        }
+<span class="fc" id="L67">    }</span>
+
+
+    /**
+     * will setup and kick-off the recursive search for pages
+     * starts in the user specified directory, moves on from there
+     * takes the base directory of the website as a input, returns nothing
+     * @param baseDirectoryString
+     */
+    public static void searchFiles(String baseDirectoryString)
+    {
+        /*
+         * convert the user provided base directory into a file object
+         */
+<span class="fc" id="L81">        File baseDirectory = new File(URLToPathMapping.normalizePathSlash(baseDirectoryString));</span>
+
+        /*
+         * send the user specified base directory for searching
+         */
+<span class="fc" id="L86">        recurvieFileSearcher(baseDirectory);</span>
+<span class="fc" id="L87">    }</span>
+
+
+    /**
+     * search a specified file to determine if the file contains HTML data
+     * currently this is a naive function that only cares about finding &quot;&lt;!DOCTYPE html&gt;&quot;
+     * will likely add additional attriubtes to search for in the future
+     * @param fileName
+     * @return true if html content in file, false otherwise
+     */
+    public static Boolean containsHTML(File fileName)
+    {
+        /*
+         * open the specified file and see if it contains anything that looks like HTML
+         */
+<span class="fc" id="L102">        String line1 = &quot;&quot;;</span>
+        try {
+<span class="fc" id="L104">            BufferedReader inTxt = new BufferedReader(new FileReader(fileName));</span>
+            /*
+             * verify something useful can actually be read from the file
+             * otherwise just return false straight away
+             */
+<span class="fc bfc" id="L109" title="All 2 branches covered.">            if ((line1 = inTxt.readLine()) == null)</span>
+            {
+<span class="fc" id="L111">                inTxt.close();</span>
+<span class="fc" id="L112">                return false;</span>
+            }
+
+            /*
+             * close the input file when done
+             */
+<span class="fc" id="L118">            inTxt.close();</span>
+        }
+<span class="nc" id="L120">        catch (IOException e) {</span>
+<span class="nc" id="L121">            e.printStackTrace();</span>
+<span class="nc" id="L122">            return false;</span>
+<span class="fc" id="L123">        }</span>
+        
+        /*
+         * make a determination if the read data from the file looks like HTML
+         */
+<span class="fc bfc" id="L128" title="All 2 branches covered.">        if (line1.equals(&quot;&lt;!DOCTYPE html&gt;&quot;))</span>
+        {
+<span class="fc" id="L130">            return true;</span>
+        }
+        else
+        {
+<span class="fc" id="L134">            return false;</span>
+        }
+    }
+
+
+    /**
+     * this function will handle searching each new page for errors
+     * if a HTTP error code 403/404 is found on the page, do not store the page
+     * @param fileName
+     * @return true if page contains http error, false otherwise
+     */
+    public static Boolean pageContainsError(File fileName)
+    {
+        /*
+         * open the specified file
+         * examine the file for error titles
+         */
+        try {
+<span class="fc" id="L152">            BufferedReader inTxt = new BufferedReader(new FileReader(fileName));</span>
+
+            /*
+             * loop through every line until either the end of the file, or an error is found
+             */
+<span class="fc" id="L157">            String searchLine = &quot;&quot;;</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">            while ((searchLine = inTxt.readLine()) != null)</span>
+            {
+<span class="fc bfc" id="L160" title="All 2 branches covered.">                if (searchLine.contains(&quot;403 Access Denied&quot;))</span>
+                {
+<span class="fc" id="L162">                    inTxt.close();</span>
+<span class="fc" id="L163">                    return true;</span>
+                }
+<span class="fc bfc" id="L165" title="All 2 branches covered.">                else if (searchLine.contains(&quot;404 Not Found&quot;))</span>
+                {
+<span class="fc" id="L167">                    inTxt.close();</span>
+<span class="fc" id="L168">                    return true;</span>
+                }
+            }
+            /*
+             * close the input file when done
+             */
+<span class="fc" id="L174">            inTxt.close();</span>
+        }
+<span class="nc" id="L176">        catch (IOException e) {</span>
+<span class="nc" id="L177">            e.printStackTrace();</span>
+<span class="nc" id="L178">            return false;</span>
+<span class="fc" id="L179">        }</span>
+
+        /*
+         * the loop got to the end of the file without finding an error
+         * return false, the file must not be an error page
+         */
+<span class="fc" id="L185">        return false;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

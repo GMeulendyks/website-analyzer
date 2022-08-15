@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Website.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">Website.java</span></div><h1>Website.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.util.ArrayList;
+
+/*
+ * this class will contain all the objects that comprise the searched website
+ */
+<span class="nc" id="L8">public class Website</span>
+{
+    /*
+     * this will dictate the maximum number of pages that the program is willing to process
+     * the assignment requirements set this to 1000, but we can easily refactor the program in the future with this
+     * anytime you are referring to the maximum number of pages (1000) use this reference: Website.maxNumPages
+     */
+    final static int maxNumPages = 1000;
+
+    /*
+     * this will store the base directory of the website
+     * will be populated based on the input from the user at program start
+     */
+<span class="fc" id="L21">    static String baseDirectory = &quot;&quot;;</span>
+
+    /*
+     * this will store the URL(s) provided by the user at program start
+     * the URLs are used to examine if a http(s) link is internal or external
+     * when the JSON file is created, these URLs will be printed near the top of the file
+     */
+<span class="fc" id="L28">    static ArrayList&lt;String&gt; inputURLS = new ArrayList&lt;String&gt;();</span>
+
+    /*
+     * initialize the object that will store all the pages
+     */
+<span class="fc" id="L33">    static ListOfPages Pages = new ListOfPages();</span>
+
+    /*
+     * initialize an instance of ListOfPageElements for each type of page element that the program will track
+     */
+<span class="fc" id="L38">    static ListOfPageElements Images = new ListOfPageElements();</span>
+<span class="fc" id="L39">    static ListOfPageElements Archives = new ListOfPageElements();</span>
+<span class="fc" id="L40">    static ListOfPageElements Videos = new ListOfPageElements();</span>
+<span class="fc" id="L41">    static ListOfPageElements Audios = new ListOfPageElements();</span>
+<span class="fc" id="L42">    static ListOfPageElements CSS = new ListOfPageElements();</span>
+<span class="fc" id="L43">    static ListOfPageElements JS = new ListOfPageElements();</span>
+<span class="fc" id="L44">    static ListOfPageElements Uncategorized = new ListOfPageElements();</span>
+
+    /**
+     * this function will clear the object structure
+     * primarily used by unit tests to get clean test data
+     * takes nothing as input, returns nothing as output, clears object structure
+     */
+    public static void reset() {
+<span class="fc" id="L52">        baseDirectory = &quot;&quot;;</span>
+<span class="fc" id="L53">        inputURLS.clear();</span>
+<span class="fc" id="L54">        Pages = new ListOfPages();</span>
+<span class="fc" id="L55">        Images = new ListOfPageElements();</span>
+<span class="fc" id="L56">        Archives = new ListOfPageElements();</span>
+<span class="fc" id="L57">        Videos = new ListOfPageElements();</span>
+<span class="fc" id="L58">        Audios = new ListOfPageElements();</span>
+<span class="fc" id="L59">        CSS = new ListOfPageElements();</span>
+<span class="fc" id="L60">        JS = new ListOfPageElements();</span>
+<span class="fc" id="L61">        Uncategorized = new ListOfPageElements();</span>
+<span class="fc" id="L62">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

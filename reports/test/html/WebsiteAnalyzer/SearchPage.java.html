@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SearchPage.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">SearchPage.java</span></div><h1>SearchPage.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+/*
+ * this class is intended to store the logic for searching a page
+ * items to search for would include links, images, CSS, JS, etc
+ */
+<span class="nc" id="L11">public class SearchPage {</span>
+<span class="fc" id="L12">    static String javascriptIndicator = &quot;&lt;script type=\&quot;text/javascript\&quot; src=\&quot;&quot;;</span>
+<span class="fc" id="L13">    static String cssIndicator = &quot;&lt;link rel=\&quot;stylesheet\&quot; href=\&quot;&quot;;</span>
+<span class="fc" id="L14">    static String imageIndicator = &quot;&lt;img src=\&quot;&quot;;</span>
+<span class="fc" id="L15">    static String linkIndicator = &quot;&lt;a href=\&quot;&quot;;</span>
+
+    /**
+     * this function will iterate through all of the discovered pages, and search them for elements
+     * one page is searched at a time, and then passed to helper functions for deeper analysis
+     * @param baseDirectory
+     */
+    public static void searchPages(String baseDirectory) {
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        for (SinglePage page : Website.Pages.List) {</span>
+
+            try {
+<span class="fc" id="L26">                BufferedReader file = new BufferedReader(new FileReader(Website.baseDirectory + &quot;/&quot; + page.getRelativePath()));</span>
+
+                /*
+                 * Loop over the file one line at a time looking for relavant elements.
+                 */
+<span class="fc" id="L31">                String newLine = &quot;&quot;;</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">                while ((newLine = file.readLine()) != null) {</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">                    if (newLine.contains(SearchPageHelpers.imageIndicator)) {</span>
+                        /*
+                         * found image
+                         */
+<span class="fc" id="L37">                        SinglePageElement image = SearchPageHelpers.searchImage(newLine, page, SearchPageHelpers.imageIndicator);</span>
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">                        if (image != null) {</span>
+<span class="fc" id="L39">                            page.addImage(image);</span>
+                        }
+<span class="fc" id="L41">                    } </span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">                    else if (newLine.contains(SearchPageHelpers.javascriptIndicator)) {</span>
+                        /*
+                         * found JavaScript
+                         */
+<span class="fc" id="L46">                        SinglePageElement element = SearchPageHelpers.searchJS(newLine, page, SearchPageHelpers.javascriptIndicator);</span>
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">                        if (element != null) {</span>
+<span class="fc" id="L48">                            page.addJs(element);</span>
+                        }
+<span class="fc" id="L50">                    } </span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">                    else if (newLine.contains(cssIndicator)) {</span>
+                        /*
+                         * found CSS
+                         */
+<span class="fc" id="L55">                        SinglePageElement element = SearchPageHelpers.searchCSS(newLine, page, SearchPageHelpers.cssIndicator);</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">                        if (element != null) {</span>
+<span class="fc" id="L57">                            page.addCss(element);</span>
+                        }
+<span class="fc" id="L59">                    } </span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">                    else if (newLine.contains(FileAnalyzer.htmlFileLinkIndicator)) {</span>
+                        /*
+                         * found other files (uncategorized)
+                         */
+<span class="fc" id="L64">                        SinglePageElement element = SearchPageHelpers.searchOther(newLine, page);</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">                        if (element != null) {</span>
+<span class="fc" id="L66">                            page.addOther(element);</span>
+                        }
+<span class="fc" id="L68">                    }</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">                    else if (newLine.contains(SearchPageHelpers.linkIndicator)) {</span>
+                        /*
+                         * found link
+                         */
+<span class="fc" id="L73">                        SearchPageHelpers.searchLinks(newLine, page, linkIndicator);</span>
+                    } 
+                }
+<span class="fc" id="L76">                file.close();</span>
+<span class="nc" id="L77">            } catch (IOException e) {</span>
+<span class="nc" id="L78">                e.printStackTrace();</span>
+<span class="fc" id="L79">            }</span>
+<span class="fc" id="L80">        }</span>
+<span class="fc" id="L81">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ExcelFileWriter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">ExcelFileWriter.java</span></div><h1>ExcelFileWriter.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+/*
+ * this class will handle the creation and filling of an excel output file
+ */
+<span class="nc" id="L16">public class ExcelFileWriter extends FileWriting{</span>
+    
+    /**
+     * this function will handle creating the output of a Excel file
+     * takes in a ListOfPages object, which is then printed to the excel file
+     * returns the Excel output filename, which is later printed and saved
+     * @param PageSet (ListOfPages)
+     */
+    public static String outputExcelFile(ListOfPages PageSet)
+    {
+       /*
+        * get the current date/time
+        * add the extra bit of text and file extension
+        */
+<span class="fc" id="L30">        String outputFileName = (getDate() + &quot;-summary.xlsx&quot;);</span>
+        
+        /*
+         * convert the page hashset to a arraylist
+         */
+<span class="fc" id="L35">        ArrayList&lt;SinglePage&gt; Pages = new ArrayList&lt;&gt;(PageSet.List);</span>
+        
+        /*
+         * create a worksheet object
+         */
+<span class="fc" id="L40">        XSSFWorkbook workbook = new XSSFWorkbook();</span>
+
+        /*
+         * create a single sheet named summary
+         */
+<span class="fc" id="L45">        XSSFSheet sheet = workbook.createSheet(&quot;summary&quot;);</span>
+
+        /*
+         * make the Excel output file
+         */
+        try
+        {
+<span class="fc" id="L52">            FileOutputStream outFile = new FileOutputStream(new File(outputFileName));</span>
+
+            /*
+             * build the header of the Excel file
+             */
+<span class="fc" id="L57">            Row headerRow = sheet.createRow(0);</span>
+
+<span class="fc" id="L59">            Cell pageCellHeader = headerRow.createCell(0);</span>
+<span class="fc" id="L60">            pageCellHeader.setCellValue(&quot;Page&quot;);</span>
+
+<span class="fc" id="L62">            Cell imageCellHeader = headerRow.createCell(1);</span>
+<span class="fc" id="L63">            imageCellHeader.setCellValue(&quot;# Images&quot;);</span>
+
+<span class="fc" id="L65">            Cell cssCellHeader = headerRow.createCell(2);</span>
+<span class="fc" id="L66">            cssCellHeader.setCellValue(&quot;# CSS&quot;);</span>
+
+<span class="fc" id="L68">            Cell scriptsCellHeader = headerRow.createCell(3);</span>
+<span class="fc" id="L69">            scriptsCellHeader.setCellValue(&quot;# Scripts&quot;);</span>
+
+<span class="fc" id="L71">            Cell intraPageCellHeader = headerRow.createCell(4);</span>
+<span class="fc" id="L72">            intraPageCellHeader.setCellValue(&quot;# Links (Intra-Page)&quot;);</span>
+
+<span class="fc" id="L74">            Cell interPageCellHeader = headerRow.createCell(5);</span>
+<span class="fc" id="L75">            interPageCellHeader.setCellValue(&quot;# Links (Internal)&quot;);</span>
+
+<span class="fc" id="L77">            Cell externalPageCellHeader = headerRow.createCell(6);</span>
+<span class="fc" id="L78">            externalPageCellHeader.setCellValue(&quot;# Links (External)&quot;);</span>
+
+            /*
+             * loop through all the rows of the excel sheet
+             * (one page at a time)
+             */
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            for (int y = 0; y &lt; Pages.size(); y++)</span>
+            {
+<span class="fc" id="L86">                Row currentRow = sheet.createRow(y + 1);</span>
+                
+                /*
+                 * loop through all the columns of a single row
+                 * (the contents of a single page at a time))
+                 */
+<span class="fc" id="L92">                Cell pageCell = currentRow.createCell(0);</span>
+<span class="fc" id="L93">                pageCell.setCellValue(Pages.get(y).getRelativePath());</span>
+
+<span class="fc" id="L95">                Cell imageCell = currentRow.createCell(1);</span>
+<span class="fc" id="L96">                imageCell.setCellValue(Pages.get(y).getnumInternalImages() + Pages.get(y).getnumExternalImages());</span>
+
+<span class="fc" id="L98">                Cell cssCell = currentRow.createCell(2);</span>
+<span class="fc" id="L99">                cssCell.setCellValue(Pages.get(y).getnumInternalCascadingStyleSheets() + Pages.get(y).getnumExternalCascadingStyleSheets());</span>
+
+<span class="fc" id="L101">                Cell scriptsCell = currentRow.createCell(3);</span>
+<span class="fc" id="L102">                scriptsCell.setCellValue(Pages.get(y).getnumInternalJavaScripts() + Pages.get(y).getnumExternalJavaScripts());</span>
+
+<span class="fc" id="L104">                Cell intraPageCell = currentRow.createCell(4);</span>
+<span class="fc" id="L105">                intraPageCell.setCellValue(Pages.get(y).getnumIntraPageLinks());</span>
+
+<span class="fc" id="L107">                Cell interPageCell = currentRow.createCell(5);</span>
+<span class="fc" id="L108">                interPageCell.setCellValue(Pages.get(y).getnumIntraSiteLinks());</span>
+
+<span class="fc" id="L110">                Cell externalPageCell = currentRow.createCell(6);</span>
+<span class="fc" id="L111">                externalPageCell.setCellValue(Pages.get(y).getnumExternalLinks());</span>
+            }
+
+            /*
+             * set the width nicely on the sheet
+             */
+<span class="fc bfc" id="L117" title="All 2 branches covered.">            for (int i = 0; i &lt; 7; i++)</span>
+            {
+<span class="fc" id="L119">                sheet.autoSizeColumn(i, false);</span>
+            }
+
+            /*
+             * write the workbook to a file, and close the file
+             */
+<span class="fc" id="L125">            workbook.write(outFile);</span>
+<span class="fc" id="L126">            workbook.close();</span>
+<span class="fc" id="L127">            outFile.close();</span>
+        }
+<span class="nc" id="L129">        catch (FileNotFoundException e)</span>
+        {
+<span class="nc" id="L131">            e.printStackTrace();</span>
+        }
+<span class="nc" id="L133">        catch (IOException e)</span>
+        {
+<span class="nc" id="L135">            e.printStackTrace();</span>
+<span class="pc" id="L136">        }</span>
+<span class="fc" id="L137">        return outputFileName;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ListOfPageElements.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">ListOfPageElements.java</span></div><h1>ListOfPageElements.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.util.HashSet;
+
+/*
+ * this class is intended to store a list of all the page elements that the program has discovered
+ * this class will also store functions intended to manipulate the list of page elements,
+ * such as reading, writing, modifiying
+ * one instance of this object will be created for each type of element (image, video, etc)
+ */
+<span class="fc" id="L11">public class ListOfPageElements {</span>
+
+    /*
+     * create a set for the elements that will be stored in this instance
+     */
+<span class="fc" id="L16">    HashSet&lt;SinglePageElement&gt; List = new HashSet&lt;SinglePageElement&gt;();</span>
+ 
+    /**
+     * this function will take the relative path of a new pageElement as an input
+     * the relative path will be checked against the Set of pageElement
+     * if the relative path is found in the Set, a false will be returned
+     * if the relative path is not found in the set, a true will be returned
+     * @param relativePath
+     * @return false if item in collection, true if does not
+     */
+    public Boolean duplicateCheck(String relativePath)
+    {
+<span class="fc" id="L28">        relativePath = URLToPathMapping.normalizePathSlash(relativePath);</span>
+
+        /*
+         * search the Set with the created page
+         */
+<span class="fc bfc" id="L33" title="All 2 branches covered.">        return !List.contains(new SinglePageElement(relativePath));</span>
+    }
+
+
+    /**
+     * this function will take the attributes of a page element as an input
+     * will add a new page element to the set based on the provided inputs
+     * @param elementRelativePath
+     * @param fileSizeBytes
+     */
+    public void addElement(String elementRelativePath, double fileSizeBytes)
+    {
+<span class="fc" id="L45">        elementRelativePath = URLToPathMapping.normalizePathSlash(elementRelativePath);</span>
+
+        /*
+         * do a duplicate check first
+         */
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (duplicateCheck(elementRelativePath))</span>
+        /*
+         * if the duplicate check passes, add the new page element to the set
+         */
+        {
+            /*
+             * create a temporary new element instance
+             */
+<span class="fc" id="L58">            SinglePageElement newElement = new SinglePageElement();</span>
+
+            /*
+             * populate the new element with the provided attributes
+             */
+<span class="fc" id="L63">            newElement.setRelativePath(elementRelativePath);</span>
+<span class="fc" id="L64">            newElement.setFileSizeBytes(fileSizeBytes);</span>
+
+            /*
+             * add the new element to the set
+             */
+<span class="fc" id="L69">            List.add(newElement);</span>
+        }
+<span class="fc" id="L71">    }</span>
+
+    
+    /**
+     * function to bond a page to a element
+     * if you find a page that links to an element, this will tie the element to the index of a page
+     * @param pageRelativePath
+     * @param elementRelativePath
+     */
+    public void pageLinkToElement(String pageRelativePath, String elementRelativePath)
+    {
+        // pageRelativePath = URLToPathMapping.normalizePathSlash(pageRelativePath);
+        // elementRelativePath = URLToPathMapping.normalizePathSlash(elementRelativePath);
+        /*
+         * only execute the linking process if the element exists in the set
+         */
+<span class="pc bpc" id="L87" title="1 of 2 branches missed.">        if (List.contains(new SinglePageElement(elementRelativePath)))</span>
+		{
+            /*
+             * retrieve both the specified page and the specified page element from their sets
+             */
+<span class="fc" id="L92">            SinglePage pageLink = Website.Pages.searchForPage(pageRelativePath);</span>
+<span class="fc" id="L93">            SinglePageElement elementLink = searchForPageElement(elementRelativePath);</span>
+
+            /*
+             * add the page that is linked to the element to the set
+             */
+<span class="fc" id="L98">            elementLink.addReferencePage(pageRelativePath);</span>
+
+            /*
+             * check that both objects actually contain something
+             */
+<span class="pc bpc" id="L103" title="3 of 4 branches missed.">            if (elementLink.getRelativePath().equals(&quot;&quot;) &amp;&amp; pageLink.getRelativePath().equals(&quot;&quot;))</span>
+            {
+                /*
+                 * re-insert both objects back into their respective sets
+                 */
+<span class="nc" id="L108">                replacePageElement(elementLink);</span>
+            }
+        }
+<span class="fc" id="L111">    }</span>
+    
+
+    /**
+     * search the set for a specified path, and return the instance of that object
+     * @param relativePath
+     * @return SinglePageElement from the collection
+     */
+    public SinglePageElement searchForPageElement(String relativePath)
+    {
+<span class="fc" id="L121">        relativePath = URLToPathMapping.normalizePathSlash(relativePath);</span>
+        
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if (List.contains(new SinglePageElement(relativePath)))</span>
+		{
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">            for (SinglePageElement PageElement : List)</span>
+			{
+<span class="fc bfc" id="L127" title="All 2 branches covered.">                if (PageElement.equals(new SinglePageElement(relativePath)))</span>
+				{
+<span class="fc" id="L129">                    return PageElement;</span>
+				}
+<span class="fc" id="L131">            }</span>
+        }
+
+        /*
+         * nothing was found, just return an empty page
+         */
+<span class="nc" id="L137">        return new SinglePageElement();</span>
+    }
+
+
+    /**
+     * replace an item in the set with a new instance of that ojbect
+     * @param modifiedElement
+     */
+    public void replacePageElement(SinglePageElement modifiedElement)
+    {
+        /*
+         * remove the old instance of the object
+         * raplace the old instance of the object with a new object
+         */
+<span class="fc" id="L151">        List.remove(modifiedElement);</span>
+<span class="fc" id="L152">        List.add(modifiedElement);</span>
+<span class="fc" id="L153">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

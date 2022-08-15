@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SinglePageElement.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">SinglePageElement.java</span></div><h1>SinglePageElement.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.util.ArrayList;
+
+
+/*
+ * this class is intended to store attributes about a single attribute found on a page
+ * an example of an attribute might be an image, video, CSS, JavaScript
+ * essentially anything found on a page that is interesting (excluding a link to a page) would be stored here
+ * one instance of this object would be created for each page element that is found
+ * if the program finds N page elements, it will have N instances of this object
+ */
+public class SinglePageElement implements Comparable&lt;SinglePageElement&gt;{
+    /*
+     * An identifier for where the element is located.
+     */
+<span class="fc" id="L17">    public enum Classification {</span>
+<span class="fc" id="L18">        NONE,</span>
+<span class="fc" id="L19">        INTERNAL,</span>
+<span class="fc" id="L20">        INTRAPAGE,</span>
+<span class="fc" id="L21">        INTRASITE,</span>
+<span class="fc" id="L22">        EXTERNAL</span>
+    }
+
+    /* Variables */
+    /*
+     * the relative path of this element
+     */
+    private String relativePath;
+    
+    /*
+     * the file size of this element in bytes
+     */
+    private double fileSizeBytes;
+    
+    /* 
+     * classification of location: internal, external, intra-page, intra-site
+     */
+    private Classification classifcation;   
+    
+    /*
+     * list of page indexes that reference this element
+     */
+<span class="pc" id="L44">    public ArrayList&lt;String&gt; referencingPages = new ArrayList&lt;String&gt;();</span>
+    
+    
+    /* Constructors */
+    /*
+     * Default (empty) constructor for SinglePageElement
+     */
+    public SinglePageElement()
+<span class="fc" id="L52">    {</span>
+<span class="fc" id="L53">        this.fileSizeBytes = 0.0;</span>
+<span class="fc" id="L54">        this.relativePath = &quot;&quot;;</span>
+<span class="fc" id="L55">        this.classifcation = Classification.NONE;</span>
+<span class="fc" id="L56">    }</span>
+
+
+    /**
+     * constructor with only specified relativePath
+     * @param relativePathInput
+     */
+    public SinglePageElement(String relativePathInput)
+<span class="fc" id="L64">    {</span>
+<span class="fc" id="L65">        this.relativePath = relativePathInput;</span>
+        // rest is empty
+<span class="fc" id="L67">        classifcation = Classification.NONE;</span>
+<span class="fc" id="L68">        fileSizeBytes = 0.0;</span>
+<span class="fc" id="L69">    }</span>
+
+
+    /**
+     * constructor with all specified inputs
+     * @param relativePathInput
+     */
+    public SinglePageElement(String relativePathInput, Classification classification, Double fileSize)
+<span class="nc" id="L77">    {</span>
+<span class="nc" id="L78">        this.relativePath = relativePathInput;</span>
+<span class="nc" id="L79">        classifcation = classification;</span>
+<span class="nc" id="L80">        fileSizeBytes = fileSize;</span>
+<span class="nc" id="L81">    }</span>
+
+
+    /* Setter Methods */
+    /** 
+     * Set relativePath 
+     * @param s (Relative Path)
+     */
+    public void setRelativePath(String s)
+    {
+<span class="fc" id="L91">        this.relativePath = s;</span>
+<span class="fc" id="L92">    }</span>
+
+
+    /** 
+     * Set classification
+     * @param c (Classification)
+     */
+    public void setClassification(Classification c)
+    {
+<span class="fc" id="L101">        this.classifcation = c;</span>
+<span class="fc" id="L102">    }</span>
+
+
+    /** 
+     * Set fileSizeBytes
+     * @param num (File Size Bytes)
+     */
+    public void setFileSizeBytes(double num)
+    {
+<span class="fc" id="L111">        this.fileSizeBytes = num;</span>
+<span class="fc" id="L112">    }</span>
+
+
+    /* Getter Methods */
+    /** 
+     * Get relativePath
+     * @return relativePath
+     */
+    public String getRelativePath()
+    {
+<span class="fc" id="L122">        return this.relativePath;</span>
+    }
+    
+
+    /**
+     * Get classifcation
+     * @return classifcation
+     */
+    public Classification getClassification()
+    {
+<span class="fc" id="L132">        return this.classifcation;</span>
+    }
+
+
+    /**
+     * Get getFileSizeBytes
+     * @return fileSizeBytes
+     */
+    public double getFileSizeBytes()
+    {
+<span class="fc" id="L142">        return this.fileSizeBytes;</span>
+    }
+
+
+    /** 
+     * Get numLinkedPages
+     * @return size of referencingPages
+     */
+    public int getNumLinkedPages()
+    {
+<span class="fc" id="L152">        return this.referencingPages.size();</span>
+    }
+
+
+    /* Functions */
+    /**
+     * add a page to the list of pages that reference this element
+     * @param pageURI
+     */
+    public void addReferencePage(String pageURI) 
+    {
+<span class="fc" id="L163">        this.referencingPages.add(pageURI);</span>
+<span class="fc" id="L164">    }</span>
+
+    
+    /* Overrides */  
+    /**
+     * Set the hashing method for SinglePageElement
+     * @return int: hashCode
+     */
+    @Override
+    public int hashCode()
+    {
+<span class="pc bpc" id="L175" title="1 of 2 branches missed.">        if (relativePath.isEmpty())</span>
+        {
+<span class="nc" id="L177">            return 0;</span>
+        }
+        else
+        {
+<span class="fc" id="L181">            return relativePath.toLowerCase().hashCode();</span>
+        }
+    }
+
+
+    /**
+     * Set the comparison method for SinglePageElement
+     * @return boolean: true if paths match, false otherwise
+     */
+    @Override
+    public boolean equals(Object rhs)
+    {
+        /*
+         * make sure that the object being compared is of the correct type
+         */
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">        if (!(rhs instanceof SinglePageElement))</span>
+        {
+<span class="nc" id="L198">            return false;</span>
+        }
+
+        /*
+         * return true if there is a match
+         */
+<span class="fc" id="L204">        return this.relativePath.equals(((SinglePageElement) rhs).relativePath);</span>
+    }
+
+    
+    /**
+     * Set the comparison of relativePaths
+     * @return int
+     */
+    @Override
+    public int compareTo(SinglePageElement RHS)
+    {
+<span class="nc" id="L215">        return this.relativePath.compareTo(RHS.relativePath);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

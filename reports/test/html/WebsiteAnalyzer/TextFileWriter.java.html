@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TextFileWriter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">WebsiteAnalyzer</a> &gt; <a href="index.source.html" class="el_package">WebsiteAnalyzer</a> &gt; <span class="el_source">TextFileWriter.java</span></div><h1>TextFileWriter.java</h1><pre class="source lang-java linenums">package WebsiteAnalyzer;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+
+<span class="nc" id="L9">public class TextFileWriter extends FileWriting{</span>
+
+    /**
+     * this function will sort a ListOfPage object Lexicographically
+     * needed for formatting the textfile output
+     * @param Pages
+     * @return sorted ArrayList of pages
+     */
+    public static ArrayList&lt;SinglePage&gt; sortListOfPages(ListOfPages Pages)
+    {
+<span class="fc" id="L19">        ArrayList&lt;SinglePage&gt; tempSortArray = new ArrayList&lt;&gt;(Pages.List);</span>
+
+<span class="fc" id="L21">        Collections.sort(tempSortArray);</span>
+<span class="fc" id="L22">        return tempSortArray;</span>
+    }
+
+
+    /**
+     * this function will handle creating the output of a text file
+     * takes a list of pages as an input, returns the text file output name as a string as an output
+     * @param Pages
+     * @return String for Text File output
+     */
+    public static String outputTextFile(ListOfPages Pages)
+    {
+       /*
+        * get the current date/time
+        * add the extra bit of text and file extension
+        */
+<span class="fc" id="L38">        String outputFileName = (getDate() + &quot;-summary.txt&quot;);</span>
+
+        /*
+         * counter to track the total size of all the pages in the list
+         */
+<span class="fc" id="L43">        double sizeOfAllPages = 0;</span>
+
+        /*
+         * have the Image list sorted before sending it to the output file
+         */
+<span class="fc" id="L48">        ArrayList&lt;SinglePage&gt; sortedPages = sortListOfPages(Pages);</span>
+        
+        /*
+         * create an output file
+         */
+        try {
+<span class="fc" id="L54">            BufferedWriter outTxt = new BufferedWriter(new FileWriter(outputFileName));</span>
+
+            /*
+             * fill the output file with individual entries
+             */
+<span class="fc bfc" id="L59" title="All 2 branches covered.">            for (int i = 0; i &lt; sortedPages.size(); i++)</span>
+            {
+                /*
+                 * convert the double to a string that can be output
+                 * write the new filesize string to the output file
+                 */
+<span class="fc" id="L65">                outTxt.write(convertFileSizeToString(sortedPages.get(i).PageSize));</span>
+<span class="fc" id="L66">                sizeOfAllPages += sortedPages.get(i).PageSize;</span>
+
+                /*
+                 * add a space between the image size and the image path
+                 */
+<span class="fc" id="L71">                outTxt.write(&quot; &quot;);</span>
+
+                /*
+                 * write the image relativePath to the file
+                 */
+<span class="fc" id="L76">                outTxt.write(sortedPages.get(i).getRelativePath());</span>
+
+                /*
+                 * add a new line for the next loop to utilize
+                 */
+<span class="fc" id="L81">                outTxt.write(&quot;\n&quot;);</span>
+            }
+
+
+            /*
+             * write the total size of the entire image list to the file
+             */
+<span class="fc" id="L88">            outTxt.write(convertFileSizeToString(sizeOfAllPages) + &quot; .&quot;);</span>
+
+            /*
+             * close the output file when done
+             */
+<span class="fc" id="L93">            outTxt.close();</span>
+
+<span class="nc" id="L95">        } catch (IOException e) {</span>
+<span class="nc" id="L96">            e.printStackTrace();</span>
+<span class="fc" id="L97">        }</span>
+<span class="fc" id="L98">        return outputFileName;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
