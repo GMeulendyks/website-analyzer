@@ -2,7 +2,7 @@ name: CI - build, test, deploy reports
 
 on:                                
   push:
-    branches: [ CITest ]
+    branches: [ master ]
 
 jobs:
   build:                           
