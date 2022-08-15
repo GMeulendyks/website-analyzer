@@ -1,0 +1,30 @@
+# Ignore Gradle project-specific cache directory
+# I am not sure if we are supposed to include this directory...
+.gradle
+
+# Ignore Gradle build output directory
+build
+
+# Ignore .project .vscode .class and .classpath files per instructions
+*.project
+*.classpath
+*.class
+.vscode
+
+# Ignore all .jar files per instructions
+*.jar
+
+# Ignore bin and target directories per instructions
+/bin
+/target
+
+# Ignore the output files that the program is creating as part of the project
+*-summary.txt
+*-summary.xlsx
+*-summary.json
+
+# Exception for gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# do not commit the ZIP file that gets built during the build process
+WebAnalysis.zip
