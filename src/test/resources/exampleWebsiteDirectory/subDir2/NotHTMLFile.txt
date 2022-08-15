@@ -1,0 +1,2 @@
+this is intended to just be a normal text file with nothing interesting about it
+if the program decides to read this in and NOT ignore it, then somethine is broken

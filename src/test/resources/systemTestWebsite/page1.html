@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <link rel="stylesheet" href="test.css"> <!-- Internal Style Sheet -->
+    <link rel="stylesheet" href="../systemTestExternalWebsite/test.css"> <!-- External Style Sheet -->
+    <script type="text/javascript" src="test.js"></script> <!-- Internal Javascript -->
+    <script type="text/javascript" src="../systemTestExternalWebsite/test.js"></script> <!-- External Javascript -->
+
+    <head>
+        <title>Page 1</title>
+    </head>
+
+    <body>
+        <h2>Table of Contents</h2>
+        <p>
+            <a href="#images">Images</a> <!-- Intrapage Link -->
+            <a href="#other">Other</a> <!-- Intrapage Link -->
+            <a href="#links">Links</a> <!-- Intrapage Link -->
+        </p>
+
+        <h2><a name="images">Images</a></h2>
+        <img src="beans.jpg" alt="Beans"> <!-- Internal Image -->
+        <img src="../systemTestExternalWebsite/beans.jpg" alt="Beans"> <!-- External Image -->
+
+        <br/>
+        <br/>
+        <br/>
+
+        <h2><a name="other">Other</a></h2>
+        <a href="file:///beans.zip">Download Beans</a> <!-- Internal Archive -->
+        <a href="file:///supa-hot-fire.gif">Download Supa Hot Fire</a> <!-- Internal Video -->
+        <a href="file:///punch.m4a">Download Punch Sound</a> <!-- Internal Audio -->
+        <a href="file:///fun.fun">Download Fun</a> <!-- Internal Uncategorized -->
+
+        <br/>
+        <br/>
+        <br/>
+
+        <h2><a name="links">Links</a></h2>
+        <a href="home.html">Home</a> <!-- Intra Site Link -->
+        <a href="page1.html">Page 1</a> <!-- Intra Site Link -->
+        <a href="page2.html">Page 2</a> <!-- Intra Site Link -->
+        <a href="otherPages/page3.html">Page 3</a> <!-- Intra Site Link -->
+        <a href="page4.html">Page 4</a> <!-- Erroneous URL -->
+        <a href="nonExistantDir/page4.html">Page 4</a> <!-- Erroneous URL -->
+
+        <a href="../systemTestExternalWebsite/home.html">External Home</a> <!-- External Site Link -->
+        <a href="../systemTestExternalWebsite/page-1.html">External Page 1</a> <!-- External Site Link -->
+        <a href="../systemTestExternalWebsite/page-2.html">External Page 2</a> <!-- External Site Link -->
+        <a href="../systemTestExternalWebsite/otherPages/page3.html">External Page 3</a> <!-- External Site Link -->
+    </body>
+</html>
