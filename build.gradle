@@ -162,7 +162,7 @@ task deployReports(dependsOn: 'reports') {
 		git.add(update: true, patterns: ['docs/'])
 
 		git.commit{message = "commit reports"}
-		//git.push{}
+		git.push{}
 		git.close()
 	}
 
