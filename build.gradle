@@ -26,6 +26,7 @@ repositories {
 dependencies {
     // Use JUnit Jupiter for testing
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+	testImplementation 'org.hamcrest:hamcrest:2.2'
 
     // Java standard library
     implementation 'com.google.guava:guava:30.1.1-jre'
@@ -78,7 +79,7 @@ test {
     finalizedBy jacocoTestReport
 }
 
-javadoc{
+javadoc {
 	failOnError false
 }
 
@@ -111,10 +112,10 @@ spotbugsTest.enabled = false
 task prepReports() {
 	dependsOn 'test', 'javadoc', 'jacocoTestReport'
 	doLast {
-		if(file('project-page').exists() == false) {
-			mkdir 'build/project-page'
+		if(file('gh-pages').exists() == false) {
+			mkdir 'build/gh-pages'
 		}
-		project.delete{delete "$buildDir/project-page"}
+		project.delete{delete "$buildDir/gh-pages"}
 
 
 		exec {
@@ -126,12 +127,12 @@ task prepReports() {
 			commandLine = ["git", "config", "user.name", "\"Graham Meulendyks\""]
 		}
 
-		def git = git.clone{dir = "$buildDir/project-page"
+		def git = git.clone{dir = "$buildDir/gh-pages"
 		uri = 'git@github.com:GMeulendyks/website-analyzer.git'
 		bare = false
-		refToCheckout = 'project-page'}
-		git.checkout{branch = 'project-page'}
-		def rmgit = git.open{dir = "$buildDir/project-page" + "/.git"}
+		refToCheckout = 'gh-pages'}
+		git.checkout{branch = 'gh-pages'}
+		def rmgit = git.open{dir = "$buildDir/gh-pages" + "/.git"}
 		rmgit.remove{patterns = ['reports/']}
 		rmgit.remove{patterns = ['docs/']}
 		rmgit.close()
@@ -142,28 +143,26 @@ task prepReports() {
 task reports() {
 	dependsOn 'prepReports'
 	doLast {
-		ant.copy(todir:'build/project-page/docs'){
+		ant.copy(todir:'build/gh-pages/docs'){
 			fileset(dir: 'build/docs')
 		}
 
-		ant.copy (todir:'build/project-page/reports'){
+		ant.copy (todir:'build/gh-pages/reports'){
 			fileset(dir: 'build/reports')
 		}
 	}
 }
 
-
-
 task deployReports(dependsOn: 'reports') {
 	doLast{
-		def git = git.open{dir = "$buildDir/project-page" + "/.git"}
+		def git = git.open{dir = "$buildDir/gh-pages" + "/.git"}
 		git.add(update: false, patterns: ['reports/'])
 		git.add(update: true, patterns: ['reports/'])
 		git.add(update: false, patterns: ['docs/'])
 		git.add(update: true, patterns: ['docs/'])
 
 		git.commit{message = "commit reports"}
-		git.push{}
+		//git.push{}
 		git.close()
 	}
 
@@ -173,7 +172,7 @@ task deployReports(dependsOn: 'reports') {
 		into "src/main/resources/scripts/"
 
 		// rename the jar file to the appropriate title
-		rename 'WebsiteAnalyzer-all.jar', "WebAnalysis.jar"
+		rename 'WebsiteAnalyzer-all.jar', "WebsiteAnalysis.jar"
 	}
 
 	task generateFileZIP(type: Zip) {
@@ -184,7 +183,7 @@ task deployReports(dependsOn: 'reports') {
 		include '*'
 
 		// save the archive to the root of the project directory
-		archiveName 'WebAnalysis.zip'
+		archiveName 'WebsiteAnalysis.zip'
 		destinationDir(file('.'))
 	}
 }
