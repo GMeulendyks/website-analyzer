@@ -182,8 +182,8 @@ import java.nio.file.Path;
 
 <span class="fc" id="L183">			toConvert = toConvert.substring(1);</span>
 			
-<span class="fc bfc" id="L185" title="All 2 branches covered.">			if(toConvert.contains(&quot;\\&quot;)){</span>
-<span class="fc" id="L186">				toConvert = toConvert.replaceAll(&quot;\\\\&quot;, &quot;/&quot;);</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">			if(toConvert.contains(&quot;\\&quot;)){</span>
+<span class="nc" id="L186">				toConvert = toConvert.replaceAll(&quot;\\\\&quot;, &quot;/&quot;);</span>
 				}
 <span class="fc" id="L188">			return toConvert;</span>
 		}
@@ -231,7 +231,7 @@ import java.nio.file.Path;
 
 <span class="pc bpc" id="L232" title="1 of 2 branches missed.">					if(toConvert.contains(&quot;\\&quot;))</span>
 					{
-<span class="fc" id="L234">						toConvert = toConvert.replaceAll(&quot;\\\\&quot;, &quot;/&quot;);</span>
+<span class="nc" id="L234">						toConvert = toConvert.replaceAll(&quot;\\\\&quot;, &quot;/&quot;);</span>
 					}
 <span class="fc" id="L236">					return toConvert;</span>
 				}

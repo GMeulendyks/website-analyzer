@@ -1,0 +1,382 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta charset="UTF-8"/>
+      <title>SpotBugs Report</title>
+      <style type="text/css">
+		.tablerow0 {
+			background: #EEEEEE;
+		}
+
+		.tablerow1 {
+			background: white;
+		}
+
+		.detailrow0 {
+			background: #EEEEEE;
+		}
+
+		.detailrow1 {
+			background: white;
+		}
+
+		.tableheader {
+			background: #b9b9fe;
+			font-size: larger;
+		}
+
+		.tablerow0:hover, .tablerow1:hover {
+			background: #aaffaa;
+		}
+
+		.priority-1 {
+				color: red;
+				font-weight: bold;
+		}
+		.priority-2 {
+				color: orange;
+				font-weight: bold;
+		}
+		.priority-3 {
+				color: green;
+				font-weight: bold;
+		}
+		.priority-4 {
+				color: blue;
+				font-weight: bold;
+		}
+		</style>
+      <script type="text/javascript">
+			function toggleRow(elid) {
+				if (document.getElementById) {
+					element = document.getElementById(elid);
+					if (element) {
+						if (element.style.display == 'none') {
+							element.style.display = 'block';
+							//window.status = 'Toggle on!';
+						} else {
+							element.style.display = 'none';
+							//window.status = 'Toggle off!';
+						}
+					}
+				}
+			}
+		</script>
+   </head>
+   <body>
+      <h1>
+         <a href="https://spotbugs.github.io/">SpotBugs</a> Report</h1>
+      <h2>Project Information</h2>
+      <p>Project: 
+		WebsiteAnalyzer (spotbugsMain)</p>
+      <p>SpotBugs version: 4.7.1</p>
+      <p>Code analyzed:</p>
+      <ul>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/SinglePage$1.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/SinglePage.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/SearchPageHelpers.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/URLToPathMapping.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/SearchPageHelpers$1.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/ListOfPageElements.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/ExcelFileWriter.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/FileWriting.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/SinglePageElement$Classification.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/CLI.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/SinglePageElement.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/SearchPage.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/JSONFileWriter.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/Website.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/FileFinder.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/ListOfPages.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/TextFileWriter.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/BakedData.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/FileAnalyzer$FileType.class</li>
+         <li>/home/runner/work/website-analyzer/website-analyzer/build/classes/java/main/WebsiteAnalyzer/FileAnalyzer.class</li>
+      </ul>
+      <p>
+         <br/>
+         <br/>
+      </p>
+      <h2>Metrics</h2>
+      <p>1022 lines of code analyzed,
+	in 20 classes, 
+	in 1 packages.</p>
+      <table width="500" cellpadding="5" cellspacing="2">
+         <tr class="tableheader">
+            <th align="left">Metric</th>
+            <th align="right">Total</th>
+            <th align="right">Density*</th>
+         </tr>
+         <tr class="tablerow0">
+            <td>High Priority Warnings</td>
+            <td align="right">5</td>
+            <td align="right">4.89</td>
+         </tr>
+         <tr class="tablerow1">
+            <td>Medium Priority Warnings</td>
+            <td align="right">2</td>
+            <td align="right">1.96</td>
+         </tr>
+         <tr class="$totalClass">
+            <td>
+               <b>Total Warnings</b>
+            </td>
+            <td align="right">
+               <b>7</b>
+            </td>
+            <td align="right">
+               <b>6.85</b>
+            </td>
+         </tr>
+      </table>
+      <p>
+         <i>(* Defects per Thousand lines of non-commenting source statements)</i>
+      </p>
+      <p>
+         <br/>
+         <br/>
+      </p>
+      <h2>Contents</h2>
+      <ul>
+         <li>
+            <a href="#Warnings_EXPERIMENTAL">Experimental Warnings</a>
+         </li>
+         <li>
+            <a href="#Warnings_I18N">Internationalization Warnings</a>
+         </li>
+         <li>
+            <a href="#Warnings_STYLE">Dodgy code Warnings</a>
+         </li>
+         <li>
+            <a href="#Details">Details</a>
+         </li>
+      </ul>
+      <h1>Summary</h1>
+      <table width="500" cellpadding="5" cellspacing="2">
+         <tr class="tableheader">
+            <th align="left">Warning Type</th>
+            <th align="right">Number</th>
+         </tr>
+         <tr class="tablerow0">
+            <td>
+               <a href="#Warnings_EXPERIMENTAL">Experimental Warnings</a>
+            </td>
+            <td align="right">1</td>
+         </tr>
+         <tr class="tablerow1">
+            <td>
+               <a href="#Warnings_I18N">Internationalization Warnings</a>
+            </td>
+            <td align="right">5</td>
+         </tr>
+         <tr class="tablerow0">
+            <td>
+               <a href="#Warnings_STYLE">Dodgy code Warnings</a>
+            </td>
+            <td align="right">1</td>
+         </tr>
+         <tr class="tablerow1">
+            <td>
+               <b>Total</b>
+            </td>
+            <td align="right">
+               <b>7</b>
+            </td>
+         </tr>
+      </table>
+      <h1>Warnings</h1>
+      <p>Click on a warning row to see full context information.</p>
+      <h2>
+         <a name="Warnings_EXPERIMENTAL">Experimental Warnings</a>
+      </h2>
+      <table class="warningtable" width="100%" cellspacing="0">
+         <tr class="tableheader">
+            <th align="left">Code</th>
+            <th align="left">Warning</th>
+         </tr>
+         <tr class="tablerow1" onclick="toggleRow('d2e52');">
+            <td>
+               <span class="priority-2">OBL</span>
+            </td>
+            <td>WebsiteAnalyzer.ExcelFileWriter.outputExcelFile(ListOfPages) may fail to clean up java.io.OutputStream on checked exception</td>
+         </tr>
+         <tr class="detailrow1">
+            <td/>
+            <td>
+               <p id="d2e52" style="display: none;">
+                  <a href="#OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE">Bug type OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE (click for details)</a>
+                  <br/>In class WebsiteAnalyzer.ExcelFileWriter<br/>In method WebsiteAnalyzer.ExcelFileWriter.outputExcelFile(ListOfPages)<br/>Reference type java.io.OutputStream<br/>1 instances of obligation remaining<br/>Obligation to clean up resource created at ExcelFileWriter.java:[line 52] is not discharged<br/>Path continues at ExcelFileWriter.java:[line 57]<br/>Path continues at ExcelFileWriter.java:[line 59]<br/>Path continues at ExcelFileWriter.java:[line 60]<br/>Path continues at ExcelFileWriter.java:[line 62]<br/>Path continues at ExcelFileWriter.java:[line 63]<br/>Path continues at ExcelFileWriter.java:[line 65]<br/>Path continues at ExcelFileWriter.java:[line 66]<br/>Path continues at ExcelFileWriter.java:[line 68]<br/>Path continues at ExcelFileWriter.java:[line 69]<br/>Path continues at ExcelFileWriter.java:[line 71]<br/>Path continues at ExcelFileWriter.java:[line 72]<br/>Path continues at ExcelFileWriter.java:[line 74]<br/>Path continues at ExcelFileWriter.java:[line 75]<br/>Path continues at ExcelFileWriter.java:[line 77]<br/>Path continues at ExcelFileWriter.java:[line 78]<br/>Path continues at ExcelFileWriter.java:[line 84]<br/>Path continues at ExcelFileWriter.java:[line 117]<br/>Path continues at ExcelFileWriter.java:[line 125]<br/>Path continues at ExcelFileWriter.java:[line 129]<br/>Path continues at ExcelFileWriter.java:[line 131]<br/>Path continues at ExcelFileWriter.java:[line 136]<br/>Path continues at ExcelFileWriter.java:[line 137]<br/>Remaining obligations: {OutputStream x 1}</p>
+            </td>
+         </tr>
+      </table>
+      <h2>
+         <a name="Warnings_I18N">Internationalization Warnings</a>
+      </h2>
+      <table class="warningtable" width="100%" cellspacing="0">
+         <tr class="tableheader">
+            <th align="left">Code</th>
+            <th align="left">Warning</th>
+         </tr>
+         <tr class="tablerow1" onclick="toggleRow('d2e118');">
+            <td>
+               <span class="priority-1">Dm</span>
+            </td>
+            <td>Found reliance on default encoding in WebsiteAnalyzer.FileFinder.containsHTML(File): new java.io.FileReader(File)</td>
+         </tr>
+         <tr class="detailrow1">
+            <td/>
+            <td>
+               <p id="d2e118" style="display: none;">
+                  <a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
+                  <br/>In class WebsiteAnalyzer.FileFinder<br/>In method WebsiteAnalyzer.FileFinder.containsHTML(File)<br/>Called method new java.io.FileReader(File)<br/>At FileFinder.java:[line 104]</p>
+            </td>
+         </tr>
+         <tr class="tablerow0" onclick="toggleRow('d2e133');">
+            <td>
+               <span class="priority-1">Dm</span>
+            </td>
+            <td>Found reliance on default encoding in WebsiteAnalyzer.FileFinder.pageContainsError(File): new java.io.FileReader(File)</td>
+         </tr>
+         <tr class="detailrow0">
+            <td/>
+            <td>
+               <p id="d2e133" style="display: none;">
+                  <a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
+                  <br/>In class WebsiteAnalyzer.FileFinder<br/>In method WebsiteAnalyzer.FileFinder.pageContainsError(File)<br/>Called method new java.io.FileReader(File)<br/>At FileFinder.java:[line 152]</p>
+            </td>
+         </tr>
+         <tr class="tablerow1" onclick="toggleRow('d2e164');">
+            <td>
+               <span class="priority-1">Dm</span>
+            </td>
+            <td>Found reliance on default encoding in WebsiteAnalyzer.JSONFileWriter.outputJsonFile(ListOfPages, ListOfPageElements, ListOfPageElements, ListOfPageElements, ListOfPageElements, ListOfPageElements): new java.io.FileWriter(String)</td>
+         </tr>
+         <tr class="detailrow1">
+            <td/>
+            <td>
+               <p id="d2e164" style="display: none;">
+                  <a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
+                  <br/>In class WebsiteAnalyzer.JSONFileWriter<br/>In method WebsiteAnalyzer.JSONFileWriter.outputJsonFile(ListOfPages, ListOfPageElements, ListOfPageElements, ListOfPageElements, ListOfPageElements, ListOfPageElements)<br/>Called method new java.io.FileWriter(String)<br/>At JSONFileWriter.java:[line 330]</p>
+            </td>
+         </tr>
+         <tr class="tablerow0" onclick="toggleRow('d2e179');">
+            <td>
+               <span class="priority-1">Dm</span>
+            </td>
+            <td>Found reliance on default encoding in WebsiteAnalyzer.SearchPage.searchPages(String): new java.io.FileReader(String)</td>
+         </tr>
+         <tr class="detailrow0">
+            <td/>
+            <td>
+               <p id="d2e179" style="display: none;">
+                  <a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
+                  <br/>In class WebsiteAnalyzer.SearchPage<br/>In method WebsiteAnalyzer.SearchPage.searchPages(String)<br/>Called method new java.io.FileReader(String)<br/>At SearchPage.java:[line 26]</p>
+            </td>
+         </tr>
+         <tr class="tablerow1" onclick="toggleRow('d2e194');">
+            <td>
+               <span class="priority-1">Dm</span>
+            </td>
+            <td>Found reliance on default encoding in WebsiteAnalyzer.TextFileWriter.outputTextFile(ListOfPages): new java.io.FileWriter(String)</td>
+         </tr>
+         <tr class="detailrow1">
+            <td/>
+            <td>
+               <p id="d2e194" style="display: none;">
+                  <a href="#DM_DEFAULT_ENCODING">Bug type DM_DEFAULT_ENCODING (click for details)</a>
+                  <br/>In class WebsiteAnalyzer.TextFileWriter<br/>In method WebsiteAnalyzer.TextFileWriter.outputTextFile(ListOfPages)<br/>Called method new java.io.FileWriter(String)<br/>At TextFileWriter.java:[line 54]</p>
+            </td>
+         </tr>
+      </table>
+      <h2>
+         <a name="Warnings_STYLE">Dodgy code Warnings</a>
+      </h2>
+      <table class="warningtable" width="100%" cellspacing="0">
+         <tr class="tableheader">
+            <th align="left">Code</th>
+            <th align="left">Warning</th>
+         </tr>
+         <tr class="tablerow1" onclick="toggleRow('d2e148');">
+            <td>
+               <span class="priority-2">NP</span>
+            </td>
+            <td>Possible null pointer dereference in WebsiteAnalyzer.FileFinder.recurvieFileSearcher(File) due to return value of called method</td>
+         </tr>
+         <tr class="detailrow1">
+            <td/>
+            <td>
+               <p id="d2e148" style="display: none;">
+                  <a href="#NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">Bug type NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE (click for details)</a>
+                  <br/>In class WebsiteAnalyzer.FileFinder<br/>In method WebsiteAnalyzer.FileFinder.recurvieFileSearcher(File)<br/>Value loaded from ?<br/>Dereferenced at FileFinder.java:[line 26]<br/>Known null at FileFinder.java:[line 26]</p>
+            </td>
+         </tr>
+      </table>
+      <h1>
+         <a name="Details">Details</a>
+      </h1>
+      <h2>
+         <a name="DM_DEFAULT_ENCODING">DM_DEFAULT_ENCODING: Reliance on default encoding</a>
+      </h2>
+
+<p> Found a call to a method which will perform a byte to String (or String to byte) conversion,
+and will assume that the default platform encoding is suitable. This will cause the application
+behavior to vary between platforms. Use an alternative API and specify a charset name or Charset
+object explicitly.</p>
+
+      <h2>
+         <a name="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE">NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Possible null pointer dereference due to return value of called method</a>
+      </h2>
+      
+<p> The return value from a method is dereferenced without a null check,
+and the return value of that method is one that should generally be checked
+for null.  This may lead to a <code>NullPointerException</code> when the code is executed.
+</p>
+      
+   <h2>
+         <a name="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE">OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE: Method may fail to clean up stream or resource on checked exception</a>
+      </h2>
+          
+          <p>
+          This method may fail to clean up (close, dispose of) a stream,
+          database object, or other
+          resource requiring an explicit cleanup operation.
+          </p>
+
+          <p>
+          In general, if a method opens a stream or other resource,
+          the method should use a try/finally block to ensure that
+          the stream or resource is cleaned up before the method
+          returns.
+          </p>
+
+          <p>
+          This bug pattern is essentially the same as the
+          OS_OPEN_STREAM and ODR_OPEN_DATABASE_RESOURCE
+          bug patterns, but is based on a different
+          (and hopefully better) static analysis technique.
+          We are interested is getting feedback about the
+          usefulness of this bug pattern.
+          For sending feedback, check:
+          </p>
+          <ul>
+            <li><a href="https://github.com/spotbugs/spotbugs/blob/master/.github/CONTRIBUTING.md">contributing guideline</a></li>
+            <li><a href="https://github.com/spotbugs/discuss/issues?q=">mailinglist</a></li>
+          </ul>
+
+          <p>
+          In particular,
+          the false-positive suppression heuristics for this
+          bug pattern have not been extensively tuned, so
+          reports about false positives are helpful to us.
+          </p>
+
+          <p>
+          See Weimer and Necula, <i>Finding and Preventing Run-Time Error Handling Mistakes</i>
+          (<a href="https://people.eecs.berkeley.edu/~necula/Papers/rte_oopsla04.pdf">PDF</a>),
+          for a description of the analysis technique.
+          </p>
+          
+      </body>
+</html>
