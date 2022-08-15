@@ -3,7 +3,12 @@
 A java program for scraping a local copy of a website, and providing statistics about the website's contents.
 
 ## Links
-* [Reports](https://GMeulendyks.github.io/WebsiteAnalyzer/)
+* [Project Webpage](https://GMeulendyks.github.io/website-analyzer/)
+
+## Running
+* **Build:** gradlew build
+* **Test:** gradlew test
+* **Deploy Reports:** gradlew deployReports
 
 ## Authors
 | **Name**          	| **GitHub User** 	| **ODU Email**    		     |
